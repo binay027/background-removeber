@@ -14,13 +14,17 @@
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body { font-family: 'Hind Siliguri', sans-serif; background-color: #F7F9FC; color: #1A202C; }
-        .gradient-bg { background: linear-gradient(135deg, #E0F7FA 0%, #FFFFFF 100%); }
+        .gradient-bg { background: linear-gradient(135deg, #E0F7FA 0%, #FFFFFF 100%); transition: background-color 0.3s ease; }
         .cta-button { transition: all 0.3s ease; box-shadow: 0 4px 14px 0 rgba(0, 118, 255, 0.39); }
         .cta-button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px 0 rgba(0, 118, 255, 0.23); }
         .feature-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
         .feature-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
         .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .drag-over-style {
+            border: 3px dashed #007BFF !important;
+            background-color: #EBF8FF;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -38,12 +42,12 @@
     </header>
 
     <main>
-        <section class="gradient-bg pt-20 pb-24 text-center">
+        <section id="drop-zone" class="gradient-bg pt-20 pb-24 text-center border-4 border-dashed border-transparent">
             <div class="container mx-auto px-6">
                 <h1 class="text-4xl md:text-6xl font-extrabold text-gray-800 leading-tight mb-4">ছবির ব্যাকগ্রাউন্ড সরান, সম্পূর্ণ বিনামূল্যে</h1>
                 <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">মাত্র এক ক্লিকে, আমাদের AI প্রযুক্তি ব্যবহার করে যেকোনো ছবির ব্যাকগ্রাউন্ড স্বয়ংক্রিয়ভাবে এবং নিখুঁতভাবে মুছে ফেলুন।</p>
-                <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-                    <label for="image-upload" class="w-full sm:w-auto cursor-pointer bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg cta-button inline-block">
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-4 pointer-events-none">
+                    <label for="image-upload" class="w-full sm:w-auto cursor-pointer bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg cta-button inline-block pointer-events-auto">
                         ছবি আপলোড করুন
                     </label>
                     <input type="file" id="image-upload" class="hidden" accept="image/*">
@@ -148,6 +152,7 @@
             });
 
             // Image Processing Logic
+            const dropZone = document.getElementById('drop-zone');
             const imageUpload = document.getElementById('image-upload');
             const resultSection = document.getElementById('result-section');
             const loading = document.getElementById('loading');
@@ -158,11 +163,36 @@
 
             // --- গুরুত্বপূর্ণ ---
             // নিচের এই জায়গায় আপনার remove.bg API Key বসান।
-            // Go to www.remove.bg/api to get your free key.
-            const apiKey = 'MKyYqxAq4QEoPcGSYZPUKSMK'; 
+            const apiKey = 'YOUR_API_KEY_HERE'; 
+            
+            // Drag and Drop Event Listeners
+            dropZone.addEventListener('dragover', (event) => {
+                event.preventDefault();
+                dropZone.classList.add('drag-over-style');
+            });
 
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('drag-over-style');
+            });
+
+            dropZone.addEventListener('drop', (event) => {
+                event.preventDefault();
+                dropZone.classList.remove('drag-over-style');
+                const files = event.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFile(files[0]);
+                }
+            });
+
+            // Button Click Event Listener
             imageUpload.addEventListener('change', function(event) {
-                const file = event.target.files[0];
+                const files = event.target.files;
+                if (files.length > 0) {
+                    handleFile(files[0]);
+                }
+            });
+
+            function handleFile(file) {
                 if (!file) {
                     return;
                 }
@@ -185,15 +215,14 @@
 
                 fetch('https://api.remove.bg/v1.0/removebg', {
                     method: 'POST',
-                    headers: {
-                        'X-Api-Key': apiKey
-                    },
+                    headers: { 'X-Api-Key': apiKey },
                     body: formData
                 })
                 .then(response => {
                     if (!response.ok) {
                         return response.json().then(err => { 
-                            throw new Error(err.errors ? err.errors[0].title : 'একটি অজানা সমস্যা হয়েছে।');
+                            const errorMsg = err.errors ? err.errors[0].title : 'একটি অজানা সমস্যা হয়েছে।';
+                            throw new Error(errorMsg);
                         });
                     }
                     return response.blob();
@@ -206,9 +235,9 @@
                     resultDisplay.classList.remove('hidden');
                 })
                 .catch(error => {
-                    showError(`Error: ${error.message}`);
+                    showError(`ত্রুটি: ${error.message}`);
                 });
-            });
+            }
 
             function showError(message) {
                 loading.classList.add('hidden');
@@ -216,8 +245,10 @@
                 errorMessage.textContent = message;
                 errorMessage.classList.remove('hidden');
                 resultSection.classList.remove('hidden');
+                 window.scrollTo({ top: resultSection.offsetTop, behavior: 'smooth' });
             }
         });
     </script>
 </body>
 </html>
+

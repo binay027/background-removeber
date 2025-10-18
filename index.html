@@ -8,7 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@imgly/background-removal/dist/browser.js"></script>
+    
+    <!-- The IMG LY script is now loaded only via dynamic import in the script tag below -->
 
     <style>
         body { font-family: 'Hind Siliguri', sans-serif; background-color: #F7F9FC; color: #1A202C; scroll-behavior: smooth; }
@@ -85,7 +86,6 @@
             </div>
         </section>
 
-        <!-- Static sections: How it works, Features, FAQ -->
         <section id="how-it-works" class="py-20 bg-white"><div class="container mx-auto px-6"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">মাত্র ৩টি সহজ ধাপে কাজ করে</h2></div><div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center"><div class="p-6"><div class="flex items-center justify-center h-20 w-20 mx-auto bg-blue-100 text-blue-600 rounded-full text-4xl mb-4">📤</div><h3 class="text-xl font-semibold mb-2">১. ছবি আপলোড করুন</h3><p class="text-gray-500">আপনার কম্পিউটার বা ফোন থেকে যেকোনো ফরম্যাটের ছবি বেছে নিন।</p></div><div class="p-6"><div class="flex items-center justify-center h-20 w-20 mx-auto bg-green-100 text-green-600 rounded-full text-4xl mb-4">✨</div><h3 class="text-xl font-semibold mb-2">২. AI প্রসেসিং</h3><p class="text-gray-500">আমাদের স্মার্ট AI কয়েক সেকেন্ডের মধ্যে স্বয়ংক্রিয়ভাবে ব্যাকগ্রাউন্ড মুছে ফেলবে।</p></div><div class="p-6"><div class="flex items-center justify-center h-20 w-20 mx-auto bg-purple-100 text-purple-600 rounded-full text-4xl mb-4">📥</div><h3 class="text-xl font-semibold mb-2">৩. ডাউনলোড করুন</h3><p class="text-gray-500">আপনার নতুন স্বচ্ছ ব্যাকগ্রাউন্ড সহ হাই-রেজোলিউশন ছবিটি ডাউনলোড করুন।</p></div></div></div></section>
         <section id="features" class="py-20 bg-gray-50"><div class="container mx-auto px-6"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">আমাদের শক্তিশালী ফিচারসমূহ</h2></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">ব্রাউজার-ভিত্তিক AI</h3><p class="text-gray-600">আপনার ছবি কোনো সার্ভারে না পাঠিয়ে, আপনার কম্পিউটারেই প্রসেস করা হয়। সম্পূর্ণ নিরাপদ।</p></div><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">উচ্চ-মানের আউটপুট</h3><p class="text-gray-600">কোনো মান না হারিয়ে হাই-রেজোলিউশনে স্বচ্ছ ব্যাকগ্রাউন্ডসহ ছবি ডাউনলোড করুন।</p></div><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">API-মুক্ত</h3><p class="text-gray-600">কোনো বাইরের সার্ভিসের উপর নির্ভরশীল নয়। সীমাহীন ব্যবহার করুন, কোনো API Key ছাড়াই।</p></div></div></div></section>
         <section id="faq" class="py-20 bg-white"><div class="container mx-auto px-6 max-w-3xl"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">সাধারণ জিজ্ঞাসা (FAQ)</h2></div><div class="space-y-4"><div class="bg-white rounded-lg shadow-sm"><button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none"><span>এই সার্ভিসটি কি সত্যিই বিনামূল্যে?</span><span class="faq-arrow transform transition-transform duration-300">▼</span></button><div class="faq-answer hidden p-5 pt-0 text-gray-600">হ্যাঁ, এই টুলটি সম্পূর্ণ বিনামূল্যে ব্যবহার করা যায়। কারণ এটি আপনার ব্রাউজারেই চলে এবং কোনো সার্ভার খরচ নেই।</div></div><div class="bg-white rounded-lg shadow-sm"><button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none"><span>আমার ছবি কি নিরাপদ?</span><span class="faq-arrow transform transition-transform duration-300">▼</span></button><div class="faq-answer hidden p-5 pt-0 text-gray-600">আপনার ছবি ১০০% নিরাপদ। ছবিটি আপনার কম্পিউটারেই প্রসেস হয় এবং কখনোই আমাদের বা অন্য কোনো সার্ভারে আপলোড হয় না।</div></div></div></div></section>
@@ -97,11 +97,9 @@
 
     <script type="module">
         document.addEventListener('DOMContentLoaded', function () {
-            // Static content setup
             const faqQuestions = document.querySelectorAll('.faq-question');
             faqQuestions.forEach(question => { question.addEventListener('click', () => { const answer = question.nextElementSibling; const arrow = question.querySelector('.faq-arrow'); const isOpening = answer.classList.contains('hidden'); document.querySelectorAll('.faq-answer').forEach(ans => { if (!ans.classList.contains('hidden') && ans !== answer) { ans.classList.add('hidden'); ans.previousElementSibling.querySelector('.faq-arrow').style.transform = 'rotate(0deg)'; } }); answer.classList.toggle('hidden'); arrow.style.transform = isOpening ? 'rotate(180deg)' : 'rotate(0deg)'; }); });
 
-            // Core App Logic
             const dropZone = document.getElementById('drop-zone');
             const uploadLabel = document.getElementById('upload-label');
             const imageUpload = document.getElementById('image-upload');
@@ -131,12 +129,20 @@
 
             async function initializeApp() {
                 setUploadState(false, "AI মডেল লোড হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...");
-                console.log("Model loading started...");
                 try {
-                    const { removeBackground: loadedRemoveBackground } = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal/dist/browser.js');
-                    removeBackground = loadedRemoveBackground;
+                    // Correctly import the module and access the 'removeBackground' function
+                    const imglyModule = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal/dist/browser.js');
+                    removeBackground = imglyModule.removeBackground;
+                    
+                    if (typeof removeBackground !== 'function') {
+                       // Fallback for modules that might use a default export
+                       if (imglyModule.default && typeof imglyModule.default === 'function') {
+                           removeBackground = imglyModule.default;
+                       } else {
+                           throw new Error("Imported module does not contain a valid 'removeBackground' function.");
+                       }
+                    }
                     setUploadState(true, "মডেল প্রস্তুত! এখন ছবি আপলোড করুন।");
-                    console.log("Model loaded successfully.");
                 } catch (error) {
                     console.error("Fatal Error: Failed to load the background removal model.", error);
                     setUploadState(false, "AI মডেল লোড করা যায়নি। পৃষ্ঠাটি রিফ্রেশ করুন।");
@@ -146,11 +152,7 @@
 
             initializeApp();
 
-            function handleFileSelect(event) {
-                if (event.target.files.length > 0) {
-                    handleFile(event.target.files[0]);
-                }
-            }
+            function handleFileSelect(event) { if (event.target.files.length > 0) { handleFile(event.target.files[0]); } }
             imageUpload.addEventListener('change', handleFileSelect);
             
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => dropZone.addEventListener(eventName, e => {e.preventDefault(); e.stopPropagation();}));
@@ -164,11 +166,13 @@
             }
 
             async function handleFile(file) {
-                if (!isModelReady) { console.warn("Upload blocked: Model not ready."); return; }
+                if (!isModelReady || typeof removeBackground !== 'function') {
+                    showError("AI মডেল এখনো প্রস্তুত নয় অথবা সঠিকভাবে লোড হয়নি।");
+                    return;
+                }
                 if (!file || !file.type.startsWith('image/')) { showError('অনুগ্রহ করে একটি সঠিক ইমেজ ফাইল নির্বাচন করুন।'); imageUpload.value = ''; return; }
                 
                 resetUIForNewUpload();
-                console.log("File accepted, starting removal process...");
                 loadingMessage.textContent = 'ছবি প্রসেস করা হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...';
                 
                 try {
@@ -177,11 +181,9 @@
                             if (key === 'compute') {
                                 const percent = Math.round((current / total) * 100);
                                 loadingMessage.textContent = `AI মডেল গণনা করছে... ${percent}%`;
-                                console.log(`Processing progress: ${percent}%`);
                             }
                         }
                     });
-                    console.log("Background removal complete.");
                     const reader = new FileReader();
                     reader.onloadend = () => { const base64data = reader.result; displayResult(base64data); saveToHistory(base64data); renderHistory(); };
                     reader.readAsDataURL(resultBlob);
@@ -189,7 +191,7 @@
                     console.error("Background removal failed:", error);
                     showError(`একটি সমস্যা হয়েছে: ${error.message}`);
                 } finally {
-                    imageUpload.value = ''; // Always reset file input
+                    imageUpload.value = '';
                 }
             }
 

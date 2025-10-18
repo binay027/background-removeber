@@ -124,7 +124,7 @@
             function showEditorView(isProcessing, initialImageSrc) {
                 uploadSection.classList.add('hidden');
                 editorSection.classList.remove('hidden');
-                infoSections.classList.remove('hidden'); // THIS IS THE FIX
+                infoSections.classList.add('hidden'); // THIS IS THE FIX
                 landingMenu.style.display = 'none';
                 headerActionBtn.textContent = 'নতুন ছবি';
                 headerActionBtn.onclick = showLandingView;
@@ -342,7 +342,7 @@
                 }
             }
 
-            // --- Initial Setup ---
+            // --- Initial Setup for Static Parts ---
             const faqQuestions = document.querySelectorAll('.faq-question');
             faqQuestions.forEach(question => { question.addEventListener('click', () => { const answer = question.nextElementSibling; const arrow = question.querySelector('.faq-arrow'); const isOpening = answer.classList.contains('hidden'); document.querySelectorAll('.faq-answer').forEach(ans => { if (!ans.classList.contains('hidden') && ans !== answer) { ans.classList.add('hidden'); ans.previousElementSibling.querySelector('.faq-arrow').style.transform = 'rotate(0deg)'; } }); answer.classList.toggle('hidden'); arrow.style.transform = isOpening ? 'rotate(180deg)' : 'rotate(0deg)'; }); });
             showLandingView();

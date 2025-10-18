@@ -26,7 +26,7 @@
         .processing-overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0, 0, 0, 0.3);
+            background-color: rgba(0, 0, 0, 0.4);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -47,28 +47,22 @@
             border-radius: 50%;
             opacity: 0;
             animation: twinkle-roam 3s ease-in-out infinite;
-            box-shadow: 0 0 8px white, 0 0 12px white;
         }
 
         @keyframes twinkle-roam {
             0% {
-                transform: scale(0.2) translateY(0px);
+                transform: scale(0.3) translateY(0px) rotate(0deg);
                 opacity: 0;
             }
-            25% {
-                transform: scale(1) translateY(-15px);
+            20% {
                 opacity: 1;
             }
             50% {
-                transform: scale(0.5) translateY(-30px);
-                opacity: 0.7;
-            }
-            75% {
-                 transform: scale(1.2) translateY(-45px);
-                 opacity: 1;
+                transform: scale(1.5) translateY(-50px) rotate(180deg);
+                opacity: 0.8;
             }
             100% {
-                transform: scale(0) translateY(-60px);
+                transform: scale(0.3) translateY(-100px) rotate(360deg);
                 opacity: 0;
             }
         }
@@ -166,22 +160,23 @@
             dropZone.addEventListener('drop', (event) => { dropZone.classList.remove('drag-over-style'); const files = event.dataTransfer.files; if (files.length > 0) handleFile(files[0]); });
             imageUpload.addEventListener('change', (event) => { const files = event.target.files; if (files.length > 0) handleFile(files[0]); });
 
-            const starColors = ['#FFD700', '#FFA07A', '#87CEEB', '#98FB98', '#FF69B4', '#ADFF2F', '#FFFFFF'];
+            const starColors = ['#FFFFFF', '#FFD700', '#FFA07A', '#87CEEB', '#98FB98', '#FF69B4'];
 
             function generateAnimatedStars() {
                 animatedStarContainer.innerHTML = ''; 
-                for (let i = 0; i < 30; i++) { // Increased star count
+                for (let i = 0; i < 60; i++) { // Increased star count to 60
                     const star = document.createElement('div');
                     star.className = 'animated-star';
-                    const size = Math.random() * 5 + 2; // Smaller, more subtle stars
+                    const size = Math.random() * 12 + 6; // Star size between 6px and 18px
                     star.style.width = `${size}px`;
                     star.style.height = `${size}px`;
                     star.style.left = `${Math.random() * 100}%`;
                     star.style.top = `${Math.random() * 100}%`;
                     star.style.animationDelay = `${Math.random() * 3}s`;
-                    star.style.animationDuration = `${Math.random() * 2 + 3}s`; // Slower, more graceful animation
-                    star.style.backgroundColor = starColors[Math.floor(Math.random() * starColors.length)];
-                    star.style.boxShadow = `0 0 8px ${star.style.backgroundColor}, 0 0 12px ${star.style.backgroundColor}`;
+                    star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                    const starColor = starColors[Math.floor(Math.random() * starColors.length)];
+                    star.style.backgroundColor = starColor;
+                    star.style.boxShadow = `0 0 8px ${starColor}, 0 0 15px ${starColor}`;
                     animatedStarContainer.appendChild(star);
                 }
             }

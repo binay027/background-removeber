@@ -26,7 +26,7 @@
         .processing-overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(255, 255, 255, 0.7); /* Lighter overlay */
+            background-color: rgba(0, 0, 0, 0.3);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -35,27 +35,42 @@
             overflow: hidden;
         }
         
-        /* New Animated Star/Particle CSS */
+        /* New Twinkling & Roaming Star Animation */
         .animated-star-container {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
-            overflow: hidden;
-            opacity: 1; /* Keep it visible */
         }
         .animated-star {
             position: absolute;
-            background-color: #FFD700; /* Default gold */
+            background-color: white;
             border-radius: 50%;
             opacity: 0;
-            animation: star-fade-move 3s linear infinite;
+            animation: twinkle-roam 3s ease-in-out infinite;
+            box-shadow: 0 0 8px white, 0 0 12px white;
         }
 
-        @keyframes star-fade-move {
-            0% { transform: scale(0) translateY(0px) rotate(0deg); opacity: 0; }
-            20% { opacity: 1; }
-            80% { opacity: 0.8; }
-            100% { transform: scale(1.2) translateY(-50px) rotate(360deg); opacity: 0; }
+        @keyframes twinkle-roam {
+            0% {
+                transform: scale(0.2) translateY(0px);
+                opacity: 0;
+            }
+            25% {
+                transform: scale(1) translateY(-15px);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(0.5) translateY(-30px);
+                opacity: 0.7;
+            }
+            75% {
+                 transform: scale(1.2) translateY(-45px);
+                 opacity: 1;
+            }
+            100% {
+                transform: scale(0) translateY(-60px);
+                opacity: 0;
+            }
         }
     </style>
 </head>
@@ -99,9 +114,6 @@
                         
                         <div id="processing-overlay" class="processing-overlay hidden">
                              <div class="animated-star-container"></div>
-                             <div class="relative z-20 flex flex-col items-center p-4 rounded-lg">
-                                <p class="text-gray-700 font-semibold mt-4">প্রসেস করা হচ্ছে...</p>
-                             </div>
                         </div>
                     </div>
                     <a id="download-btn" href="#" download="background-removed-image.png" class="mt-6 inline-block bg-green-500 text-white px-8 py-3 rounded-full font-bold text-lg cta-button hover:bg-green-600">
@@ -154,21 +166,22 @@
             dropZone.addEventListener('drop', (event) => { dropZone.classList.remove('drag-over-style'); const files = event.dataTransfer.files; if (files.length > 0) handleFile(files[0]); });
             imageUpload.addEventListener('change', (event) => { const files = event.target.files; if (files.length > 0) handleFile(files[0]); });
 
-            const starColors = ['#FFD700', '#FFA07A', '#87CEEB', '#98FB98', '#FF69B4', '#ADFF2F']; // Various star colors
+            const starColors = ['#FFD700', '#FFA07A', '#87CEEB', '#98FB98', '#FF69B4', '#ADFF2F', '#FFFFFF'];
 
             function generateAnimatedStars() {
                 animatedStarContainer.innerHTML = ''; 
-                for (let i = 0; i < 25; i++) { // More stars for a richer effect
+                for (let i = 0; i < 30; i++) { // Increased star count
                     const star = document.createElement('div');
                     star.className = 'animated-star';
-                    const size = Math.random() * 8 + 4; // Smaller stars
+                    const size = Math.random() * 5 + 2; // Smaller, more subtle stars
                     star.style.width = `${size}px`;
                     star.style.height = `${size}px`;
                     star.style.left = `${Math.random() * 100}%`;
                     star.style.top = `${Math.random() * 100}%`;
-                    star.style.animationDelay = `${Math.random() * 2}s`; // Varying delays
-                    star.style.animationDuration = `${Math.random() * 2 + 2}s`; // Varying durations
-                    star.style.backgroundColor = starColors[Math.floor(Math.random() * starColors.length)]; // Random color
+                    star.style.animationDelay = `${Math.random() * 3}s`;
+                    star.style.animationDuration = `${Math.random() * 2 + 3}s`; // Slower, more graceful animation
+                    star.style.backgroundColor = starColors[Math.floor(Math.random() * starColors.length)];
+                    star.style.boxShadow = `0 0 8px ${star.style.backgroundColor}, 0 0 12px ${star.style.backgroundColor}`;
                     animatedStarContainer.appendChild(star);
                 }
             }
@@ -191,7 +204,7 @@
                     resultImage.src = e.target.result;
                     
                     processingOverlay.classList.remove('hidden');
-                    generateAnimatedStars(); // Start animated stars during processing
+                    generateAnimatedStars();
                     window.scrollTo({ top: resultSection.offsetTop, behavior: 'smooth' });
 
                     const formData = new FormData();
@@ -220,7 +233,7 @@
                     .catch(error => { showError(`ত্রুটি: ${error.message}`); })
                     .finally(() => { 
                         processingOverlay.classList.add('hidden');
-                        stopAnimatedStars(); // Stop animated stars after processing
+                        stopAnimatedStars();
                         imageUpload.value = ''; 
                     });
                 };
@@ -236,8 +249,8 @@
                 resultDisplayWrapper.classList.add('hidden');
                 errorMessage.textContent = message;
                 errorMessage.classList.remove('hidden');
-                processingOverlay.classList.add('hidden'); // Ensure overlay is hidden on error
-                stopAnimatedStars(); // Stop stars on error
+                processingOverlay.classList.add('hidden');
+                stopAnimatedStars();
             }
 
             function getHistory() { try { const history = localStorage.getItem('bgRemovalHistory'); return history ? JSON.parse(history) : []; } catch (e) { return []; } }
@@ -253,7 +266,7 @@
                             resultDisplayWrapper.classList.remove('hidden');
                             errorMessage.classList.add('hidden');
                             processingOverlay.classList.add('hidden');
-                            stopAnimatedStars(); // Ensure stars are off when clicking history
+                            stopAnimatedStars();
                             displayFinalResult(imageDataUrl);
                             window.scrollTo({ top: resultSection.offsetTop, behavior: 'smooth' });
                         });

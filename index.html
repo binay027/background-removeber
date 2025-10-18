@@ -16,7 +16,7 @@
         .cta-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px 0 rgba(0, 118, 255, 0.23); }
         .feature-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
         .feature-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .drag-over-style { border: 3px dashed #007BFF !important; background-color: #EBF8FF; }
         .history-thumbnail {
@@ -25,23 +25,26 @@
         }
         .history-thumbnail:hover { border-color: #3498db; transform: scale(1.05); }
 
-        /* Star Animation CSS */
-        .sparkle-container {
+        .processing-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 0.5rem;
+            z-index: 10;
             overflow: hidden;
-            pointer-events: none; /* Allows clicks to pass through to the image */
-            opacity: 0.7; /* Make sparkles subtle */
+        }
+
+        .sparkle-container-processing {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; opacity: 0.7;
         }
         .sparkle {
-            position: absolute;
-            background-color: #FFD700; /* Gold color for sparkle */
-            border-radius: 50%;
-            opacity: 0;
-            animation: sparkle-animation 1.5s ease-out infinite;
+            position: absolute; background-color: #FFD700; border-radius: 50%;
+            opacity: 0; animation: sparkle-animation 1.5s ease-out infinite;
             box-shadow: 0 0 5px #FFD700, 0 0 10px #FFD700;
         }
         @keyframes sparkle-animation {
@@ -84,17 +87,24 @@
         <section id="result-section" class="py-10 hidden">
             <div class="container mx-auto px-6 text-center">
                 <h2 class="text-2xl font-bold text-gray-800 mb-6">আপনার ফলাফল</h2>
-                <div id="loading" class="flex flex-col items-center justify-center min-h-[300px]">
-                    <div class="loader"></div>
-                    <p class="text-gray-600 mt-4">ব্যাকগ্রাউন্ড সরানো হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</p>
+                
+                <div id="result-display-wrapper" class="hidden">
+                    <div class="relative max-w-xl mx-auto bg-white p-4 rounded-lg shadow-lg">
+                        <img id="result-image" src="" alt="প্রসেস করা ছবি" class="mx-auto rounded">
+                        
+                        <div id="processing-overlay" class="processing-overlay hidden">
+                             <div class="sparkle-container-processing"></div>
+                             <div class="relative z-10 flex flex-col items-center">
+                                <div class="loader"></div>
+                                <p class="text-gray-700 font-semibold mt-4">প্রসেস করা হচ্ছে...</p>
+                             </div>
+                        </div>
+                    </div>
+                    <a id="download-btn" href="#" download="background-removed-image.png" class="mt-6 inline-block bg-green-500 text-white px-8 py-3 rounded-full font-bold text-lg cta-button hover:bg-green-600">
+                        ডাউনলোড করুন
+                    </a>
                 </div>
-                <div id="result-display" class="hidden relative max-w-xl mx-auto bg-white p-4 rounded-lg shadow-lg">
-                    <img id="result-image" src="" alt="ব্যাকগ্রাউন্ড সরানো ছবি" class="mx-auto rounded">
-                    <!-- Sparkle container will be here --><div id="sparkle-overlay" class="sparkle-container"></div>
-                </div>
-                <a id="download-btn" href="#" download="background-removed-image.png" class="mt-6 inline-block bg-green-500 text-white px-8 py-3 rounded-full font-bold text-lg cta-button hover:bg-green-600">
-                    ডাউনলোড করুন
-                </a>
+
                 <div id="error-message" class="hidden text-red-500 mt-4 bg-red-100 p-4 rounded-lg"></div>
             </div>
         </section>
@@ -105,7 +115,7 @@
                 <div id="history-container" class="flex gap-4 justify-center flex-wrap"></div>
             </div>
         </section>
-
+        
         <section id="how-it-works" class="py-20 bg-white"><div class="container mx-auto px-6"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">মাত্র ৩টি সহজ ধাপে কাজ করে</h2></div><div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center"><div class="p-6"><div class="flex items-center justify-center h-20 w-20 mx-auto bg-blue-100 text-blue-600 rounded-full text-4xl mb-4">📤</div><h3 class="text-xl font-semibold mb-2">১. ছবি আপলোড করুন</h3><p class="text-gray-500">আপনার কম্পিউটার বা ফোন থেকে যেকোনো ফরম্যাটের ছবি বেছে নিন।</p></div><div class="p-6"><div class="flex items-center justify-center h-20 w-20 mx-auto bg-green-100 text-green-600 rounded-full text-4xl mb-4">✨</div><h3 class="text-xl font-semibold mb-2">২. AI প্রসেসিং</h3><p class="text-gray-500">আমাদের স্মার্ট AI কয়েক সেকেন্ডের মধ্যে স্বয়ংক্রিয়ভাবে ব্যাকগ্রাউন্ড মুছে ফেলবে।</p></div><div class="p-6"><div class="flex items-center justify-center h-20 w-20 mx-auto bg-purple-100 text-purple-600 rounded-full text-4xl mb-4">📥</div><h3 class="text-xl font-semibold mb-2">৩. ডাউনলোড করুন</h3><p class="text-gray-500">আপনার নতুন স্বচ্ছ ব্যাকগ্রাউন্ড সহ হাই-রেজোলিউশন ছবিটি ডাউনলোড করুন।</p></div></div></div></section>
         <section id="features" class="py-20 bg-gray-50"><div class="container mx-auto px-6"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">আমাদের শক্তিশালী ফিচারসমূহ</h2></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">স্বয়ংক্রিয় ডিটেকশন</h3><p class="text-gray-600">আমাদের AI স্বয়ংক্রিয়ভাবে ছবির প্রধান বস্তু শনাক্ত করে এবং বাকি অংশ মুছে ফেলে।</p></div><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">উচ্চ-মানের আউটপুট</h3><p class="text-gray-600">কোনো মান না হারিয়ে হাই-রেজোলিউশনে স্বচ্ছ ব্যাকগ্রাউন্ডসহ ছবি ডাউনলোড করুন।</p></div><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">সময় সাশ্রয়ী</h3><p class="text-gray-600">ম্যানুয়াল এডিটিং-এর ঘণ্টার পর ঘণ্টার কাজ বাঁচিয়ে কয়েক সেকেন্ডে ফলাফল পান।</p></div></div></div></section>
         <section id="faq" class="py-20 bg-white"><div class="container mx-auto px-6 max-w-3xl"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">সাধারণ জিজ্ঞাসা (FAQ)</h2></div><div class="space-y-4"><div class="bg-white rounded-lg shadow-sm"><button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none"><span>এই সার্ভিসটি কি সত্যিই বিনামূল্যে?</span><span class="faq-arrow transform transition-transform duration-300">▼</span></button><div class="faq-answer hidden p-5 pt-0 text-gray-600">হ্যাঁ, আমাদের বেসিক ব্যাকগ্রাউন্ড রিমুভাল সার্ভিসটি বিনামূল্যে। remove.bg API ব্যবহারের একটি মাসিক কোটা থাকে, যা সাধারণ ব্যবহারের জন্য যথেষ্ট।</div></div><div class="bg-white rounded-lg shadow-sm"><button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none"><span>আমি কোন ধরনের ছবি ব্যবহার করতে পারি?</span><span class="faq-arrow transform transition-transform duration-300">▼</span></button><div class="faq-answer hidden p-5 pt-0 text-gray-600">আপনি মানুষ, পণ্য, প্রাণী, গাড়ি, বা যেকোনো বস্তুর ছবি ব্যবহার করতে পারেন। সেরা ফলাফলের জন্য, ছবিটি পরিষ্কার এবং ভালোভাবে আলোকিত হওয়া উচিত।</div></div></div></div></section>
@@ -123,14 +133,14 @@
             const dropZone = document.getElementById('drop-zone');
             const imageUpload = document.getElementById('image-upload');
             const resultSection = document.getElementById('result-section');
-            const loading = document.getElementById('loading');
-            const resultDisplay = document.getElementById('result-display');
+            const resultDisplayWrapper = document.getElementById('result-display-wrapper');
             const resultImage = document.getElementById('result-image');
+            const processingOverlay = document.getElementById('processing-overlay');
             const downloadBtn = document.getElementById('download-btn');
             const errorMessage = document.getElementById('error-message');
             const historySection = document.getElementById('history-section');
             const historyContainer = document.getElementById('history-container');
-            const sparkleOverlay = document.getElementById('sparkle-overlay'); // Get the sparkle container
+            const sparkleContainer = document.querySelector('.sparkle-container-processing');
 
             const apiKey = 'MKyYqxAq4QEoPcGSYZPUKSMK'; 
             
@@ -140,64 +150,84 @@
             dropZone.addEventListener('drop', (event) => { dropZone.classList.remove('drag-over-style'); const files = event.dataTransfer.files; if (files.length > 0) handleFile(files[0]); });
             imageUpload.addEventListener('change', (event) => { const files = event.target.files; if (files.length > 0) handleFile(files[0]); });
 
-            function resetUIForNewUpload() {
-                resultSection.classList.remove('hidden'); loading.classList.remove('hidden'); resultDisplay.classList.add('hidden'); errorMessage.classList.add('hidden');
-                resultImage.src = ''; downloadBtn.href = '#'; window.scrollTo({ top: resultSection.offsetTop, behavior: 'smooth' });
-                stopSparkleAnimation(); // Ensure sparkles are stopped for new upload
-            }
-
             function generateSparkles() {
-                // Clear existing sparkles first
-                sparkleOverlay.innerHTML = ''; 
-                for (let i = 0; i < 15; i++) { // Generate 15 sparkles
+                sparkleContainer.innerHTML = ''; 
+                for (let i = 0; i < 15; i++) {
                     const sparkle = document.createElement('div');
                     sparkle.className = 'sparkle';
-                    // Random size between 8px and 20px
                     const size = Math.random() * 12 + 8; 
                     sparkle.style.width = `${size}px`;
                     sparkle.style.height = `${size}px`;
-                    // Random position within the image container
                     sparkle.style.left = `${Math.random() * 100}%`;
                     sparkle.style.top = `${Math.random() * 100}%`;
-                    // Random delay for animation to make it twinkle
                     sparkle.style.animationDelay = `${Math.random() * 1.5}s`; 
-                    sparkleOverlay.appendChild(sparkle);
+                    sparkleContainer.appendChild(sparkle);
                 }
             }
 
             function stopSparkleAnimation() {
-                 sparkleOverlay.innerHTML = ''; // Remove all sparkle elements
+                 sparkleContainer.innerHTML = '';
             }
 
             function handleFile(file) {
-                if (!file || !file.type.startsWith('image/')) { showError('অনুগ্রহ করে একটি সঠিক ইমেজ ফাইল নির্বাচন করুন।'); imageUpload.value = ''; return; }
+                if (!file || !file.type.startsWith('image/')) { 
+                    showError('অনুগ্রহ করে একটি সঠিক ইমেজ ফাইল নির্বাচন করুন।'); 
+                    return; 
+                }
                 
-                resetUIForNewUpload();
+                const originalImageReader = new FileReader();
+                originalImageReader.onload = function(e) {
+                    resultSection.classList.remove('hidden');
+                    resultDisplayWrapper.classList.remove('hidden');
+                    errorMessage.classList.add('hidden');
+                    resultImage.src = e.target.result;
+                    processingOverlay.classList.remove('hidden');
+                    generateSparkles();
+                    window.scrollTo({ top: resultSection.offsetTop, behavior: 'smooth' });
 
-                const formData = new FormData();
-                formData.append('image_file', file);
-                formData.append('size', 'auto');
+                    const formData = new FormData();
+                    formData.append('image_file', file);
+                    formData.append('size', 'auto');
 
-                fetch('https://api.remove.bg/v1.0/removebg', {
-                    method: 'POST',
-                    headers: { 'X-Api-Key': apiKey },
-                    body: formData
-                })
-                .then(response => {
-                    if (!response.ok) { return response.json().then(err => { const errorMsg = err.errors ? err.errors[0].title : 'একটি অজানা সমস্যা হয়েছে।'; throw new Error(errorMsg); }); }
-                    return response.blob();
-                })
-                .then(blob => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => { const base64data = reader.result; displayResult(base64data); saveToHistory(base64data); renderHistory(); generateSparkles(); }; // Generate sparkles after displaying result
-                    reader.readAsDataURL(blob);
-                })
-                .catch(error => { showError(`ত্রুটি: ${error.message}`); })
-                .finally(() => { imageUpload.value = ''; });
+                    fetch('https://api.remove.bg/v1.0/removebg', {
+                        method: 'POST',
+                        headers: { 'X-Api-Key': apiKey },
+                        body: formData
+                    })
+                    .then(response => {
+                        if (!response.ok) { return response.json().then(err => { const errorMsg = err.errors ? err.errors[0].title : 'একটি অজানা সমস্যা হয়েছে।'; throw new Error(errorMsg); }); }
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        const processedImageReader = new FileReader();
+                        processedImageReader.onloadend = () => {
+                            const base64data = processedImageReader.result;
+                            displayFinalResult(base64data);
+                            saveToHistory(base64data);
+                            renderHistory();
+                        };
+                        processedImageReader.readAsDataURL(blob);
+                    })
+                    .catch(error => { showError(`ত্রুটি: ${error.message}`); })
+                    .finally(() => { 
+                        processingOverlay.classList.add('hidden');
+                        stopSparkleAnimation();
+                        imageUpload.value = ''; 
+                    });
+                };
+                originalImageReader.readAsDataURL(file);
             }
 
-            function displayResult(imageDataUrl) { resultImage.src = imageDataUrl; downloadBtn.href = imageDataUrl; loading.classList.add('hidden'); resultDisplay.classList.remove('hidden'); }
-            function showError(message) { loading.classList.add('hidden'); errorMessage.textContent = message; errorMessage.classList.remove('hidden'); }
+            function displayFinalResult(imageDataUrl) {
+                resultImage.src = imageDataUrl;
+                downloadBtn.href = imageDataUrl;
+            }
+
+            function showError(message) {
+                resultDisplayWrapper.classList.add('hidden');
+                errorMessage.textContent = message;
+                errorMessage.classList.remove('hidden');
+            }
 
             function getHistory() { try { const history = localStorage.getItem('bgRemovalHistory'); return history ? JSON.parse(history) : []; } catch (e) { return []; } }
             function saveToHistory(base64data) { let history = getHistory(); history.unshift(base64data); if (history.length > 5) history = history.slice(0, 5); try { localStorage.setItem('bgRemovalHistory', JSON.stringify(history)); } catch (e) { console.error("Failed to save history:", e); } }
@@ -207,7 +237,15 @@
                     historySection.classList.remove('hidden');
                     history.forEach(imageDataUrl => {
                         const img = document.createElement('img'); img.src = imageDataUrl; img.className = 'history-thumbnail'; img.alt = 'Saved work';
-                        img.addEventListener('click', () => { displayResult(imageDataUrl); window.scrollTo({ top: resultSection.offsetTop, behavior: 'smooth' }); generateSparkles(); }); // Generate sparkles when clicking history
+                        img.addEventListener('click', () => { 
+                            resultSection.classList.remove('hidden');
+                            resultDisplayWrapper.classList.remove('hidden');
+                            errorMessage.classList.add('hidden');
+                            processingOverlay.classList.add('hidden');
+                            stopSparkleAnimation();
+                            displayFinalResult(imageDataUrl);
+                            window.scrollTo({ top: resultSection.offsetTop, behavior: 'smooth' });
+                        });
                         historyContainer.appendChild(img);
                     });
                 }

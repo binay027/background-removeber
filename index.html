@@ -15,7 +15,8 @@
         body { font-family: 'Hind Siliguri', sans-serif; background-color: #F7F9FC; color: #1A202C; scroll-behavior: smooth; }
         .gradient-bg { background: linear-gradient(135deg, #E0F7FA 0%, #FFFFFF 100%); transition: background-color 0.3s ease; }
         .cta-button { transition: all 0.3s ease; box-shadow: 0 4px 14px 0 rgba(0, 118, 255, 0.39); }
-        .cta-button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px 0 rgba(0, 118, 255, 0.23); }
+        .cta-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px 0 rgba(0, 118, 255, 0.23); }
+        .cta-button:disabled { opacity: 0.5; cursor: not-allowed; }
         .feature-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
         .feature-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
         .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
@@ -48,13 +49,14 @@
             <div class="container mx-auto px-6">
                 <h1 class="text-4xl md:text-6xl font-extrabold text-gray-800 leading-tight mb-4">যেকোনো ছবির ব্যাকগ্রাউন্ড সরান</h1>
                 <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">আমাদের নতুন AI মডেল সরাসরি আপনার ব্রাউজারেই কাজ করে, যেকোনো জটিল ছবির ব্যাকগ্রাউন্ডও নিখুঁতভাবে মুছে ফেলে।</p>
-                <div id="upload-container" class="flex flex-col sm:flex-row justify-center items-center gap-4 pointer-events-none">
-                    <label for="image-upload" class="w-full sm:w-auto cursor-pointer bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg cta-button inline-block pointer-events-auto">
+                <div id="upload-container" class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                    <label id="upload-label" for="image-upload" class="w-full sm:w-auto cursor-pointer bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg cta-button inline-block">
                         ছবি আপলোড করুন
                     </label>
-                    <input type="file" id="image-upload" class="hidden" accept="image/*">
+                    <input type="file" id="image-upload" class="hidden" accept="image/*" disabled>
                     <p class="text-gray-500 text-sm">অথবা একটি ফাইল এখানে টেনে আনুন</p>
                 </div>
+                 <p id="model-status" class="text-sm text-blue-700 mt-4 font-semibold">AI মডেল লোড হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</p>
             </div>
         </section>
 
@@ -88,7 +90,7 @@
             </div>
         </section>
         
-        <!-- How it works Section -->
+        <!-- How it works, Features, FAQ Sections remain the same -->
         <section id="how-it-works" class="py-20 bg-white">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-12">
@@ -114,7 +116,6 @@
             </div>
         </section>
 
-        <!-- Features Section -->
         <section id="features" class="py-20 bg-gray-50">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-12">
@@ -137,7 +138,6 @@
             </div>
         </section>
         
-        <!-- FAQ Section -->
         <section id="faq" class="py-20 bg-white">
             <div class="container mx-auto px-6 max-w-3xl">
                 <div class="text-center mb-12">
@@ -193,6 +193,8 @@
             });
 
             const dropZone = document.getElementById('drop-zone');
+            const uploadLabel = document.getElementById('upload-label');
+            const modelStatus = document.getElementById('model-status');
             const resultSection = document.getElementById('result-section');
             const loading = document.getElementById('loading');
             const loadingMessage = document.getElementById('loading-message');
@@ -203,15 +205,35 @@
             const historySection = document.getElementById('history-section');
             const historyContainer = document.getElementById('history-container');
             let imageUpload = document.getElementById('image-upload');
-
             let removeBackground;
 
+            function setUploadState(enabled, message) {
+                if (enabled) {
+                    imageUpload.disabled = false;
+                    uploadLabel.classList.remove('opacity-50', 'cursor-not-allowed');
+                    uploadLabel.classList.add('cta-button');
+                    modelStatus.textContent = message;
+                    modelStatus.classList.remove('text-blue-700');
+                    modelStatus.classList.add('text-green-600');
+                } else {
+                    imageUpload.disabled = true;
+                    uploadLabel.classList.add('opacity-50', 'cursor-not-allowed');
+                    uploadLabel.classList.remove('cta-button');
+                    modelStatus.textContent = message;
+                    modelStatus.classList.add('text-blue-700');
+                    modelStatus.classList.remove('text-green-600');
+                }
+            }
+
             async function loadModel() {
+                setUploadState(false, "AI মডেল লোড হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...");
                 try {
                     const { removeBackground: loadedRemoveBackground } = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal/dist/browser.js');
                     removeBackground = loadedRemoveBackground;
+                    setUploadState(true, "মডেল প্রস্তুত! এখন ছবি আপলোড করুন।");
                 } catch (error) {
                     console.error("Failed to load the background removal model.", error);
+                    setUploadState(false, "AI মডেল লোড করা যায়নি। পৃষ্ঠাটি রিফ্রেশ করুন।");
                     showError("AI মডেল লোড করা যায়নি। অনুগ্রহ করে পৃষ্ঠাটি রিফ্রেশ করুন।");
                 }
             }
@@ -225,23 +247,18 @@
                 }
             }
             
-            function recreateImageInput() {
-                const oldInput = document.getElementById('image-upload');
-                const newInput = oldInput.cloneNode(true);
-                oldInput.parentNode.replaceChild(newInput, oldInput);
-                imageUpload = newInput;
-                imageUpload.addEventListener('change', handleFileSelect);
-            }
-
             imageUpload.addEventListener('change', handleFileSelect);
             
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => dropZone.addEventListener(eventName, preventDefaults, false));
 
             function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
 
-            dropZone.addEventListener('dragover', () => dropZone.classList.add('drag-over-style'));
+            dropZone.addEventListener('dragover', (e) => {
+                if (!imageUpload.disabled) dropZone.classList.add('drag-over-style');
+            });
             dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over-style'));
             dropZone.addEventListener('drop', (event) => {
+                 if (imageUpload.disabled) return;
                 dropZone.classList.remove('drag-over-style');
                 const files = event.dataTransfer.files;
                 if (files.length > 0) handleFile(files[0]);
@@ -258,20 +275,17 @@
             }
 
             async function handleFile(file) {
-                if (!removeBackground) {
-                     showError("AI মডেল এখনো প্রস্তুত নয়। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।");
+                if (!removeBackground || imageUpload.disabled) {
+                     showError("AI মডেল এখনো প্রস্তুত নয় অথবা নিষ্ক্রিয় আছে।");
                      return;
                 }
-
                 if (!file || !file.type.startsWith('image/')) {
                     showError('অনুগ্রহ করে একটি সঠিক ইমেজ ফাইল নির্বাচন করুন।');
-                    recreateImageInput();
+                    imageUpload.value = '';
                     return;
                 }
-                
                 resetUIForNewUpload();
                 loadingMessage.textContent = 'ছবি প্রসেস করা হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...';
-
                 try {
                     const resultBlob = await removeBackground(file, {
                         progress: (key, current, total) => {
@@ -281,7 +295,6 @@
                              }
                         }
                     });
-
                     const reader = new FileReader();
                     reader.onloadend = () => {
                         const base64data = reader.result;
@@ -290,12 +303,11 @@
                         renderHistory();
                     };
                     reader.readAsDataURL(resultBlob);
-
                 } catch (error) {
                     console.error("Background removal failed:", error);
                     showError(`একটি সমস্যা হয়েছে: ${error.message}`);
                 } finally {
-                    recreateImageInput();
+                    imageUpload.value = '';
                 }
             }
 
@@ -331,7 +343,6 @@
             function renderHistory() {
                 const history = getHistory();
                 historyContainer.innerHTML = ''; 
-
                 if (history.length === 0) {
                     historySection.classList.add('hidden');
                 } else {
@@ -349,7 +360,6 @@
                     });
                 }
             }
-            
             renderHistory();
         });
     </script>

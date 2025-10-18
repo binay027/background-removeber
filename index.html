@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ফটো ব্যাকগ্রাউন্ড রিমুভার | তাৎক্ষণিক ও নিখুঁত</title>
+    <title>প্রফেশনাল ফটো ব্যাকগ্রাউন্ড রিমুভার</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- IMGLY Background Removal Library -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@imgly/background-removal/dist/browser.js"></script>
+
     <style>
-        body { font-family: 'Hind+Siliguri', sans-serif; background-color: #F7F9FC; color: #1A202C; scroll-behavior: smooth; }
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #F7F9FC; color: #1A202C; scroll-behavior: smooth; }
         .gradient-bg { background: linear-gradient(135deg, #E0F7FA 0%, #FFFFFF 100%); transition: background-color 0.3s ease; }
         .cta-button { transition: all 0.3s ease; box-shadow: 0 4px 14px 0 rgba(0, 118, 255, 0.39); }
         .cta-button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px 0 rgba(0, 118, 255, 0.23); }
@@ -29,7 +32,7 @@
 
     <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="text-2xl font-bold text-blue-600"><span>রিমুভ<span class="text-gray-800">বিজি</span></span></div>
+            <div class="text-2xl font-bold text-blue-600"><span>প্রো<span class="text-gray-800">রিমুভার</span></span></div>
             <div class="hidden md:flex space-x-6 items-center">
                 <a href="#features" class="text-gray-600 hover:text-blue-600 transition">ফিচার</a>
                 <a href="#how-it-works" class="text-gray-600 hover:text-blue-600 transition">কিভাবে কাজ করে</a>
@@ -43,8 +46,8 @@
     <main>
         <section id="drop-zone" class="gradient-bg pt-20 pb-24 text-center border-4 border-dashed border-transparent">
             <div class="container mx-auto px-6">
-                <h1 class="text-4xl md:text-6xl font-extrabold text-gray-800 leading-tight mb-4">ছবির ব্যাকগ্রাউন্ড সরান, সম্পূর্ণ বিনামূল্যে</h1>
-                <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">মাত্র এক ক্লিকে, যেকোনো ছবির ব্যাকগ্রাউন্ড স্বয়ংক্রিয়ভাবে এবং নিখুঁতভাবে মুছে ফেলুন।</p>
+                <h1 class="text-4xl md:text-6xl font-extrabold text-gray-800 leading-tight mb-4">যেকোনো ছবির ব্যাকগ্রাউন্ড সরান</h1>
+                <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">আমাদের নতুন AI মডেল সরাসরি আপনার ব্রাউজারেই কাজ করে, যেকোনো জটিল ছবির ব্যাকগ্রাউন্ডও নিখুঁতভাবে মুছে ফেলে।</p>
                 <div id="upload-container" class="flex flex-col sm:flex-row justify-center items-center gap-4 pointer-events-none">
                     <label for="image-upload" class="w-full sm:w-auto cursor-pointer bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg cta-button inline-block pointer-events-auto">
                         ছবি আপলোড করুন
@@ -52,8 +55,6 @@
                     <input type="file" id="image-upload" class="hidden" accept="image/*">
                     <p class="text-gray-500 text-sm">অথবা একটি ফাইল এখানে টেনে আনুন</p>
                 </div>
-                <!-- নতুন পরামর্শ যোগ করা হয়েছে -->
-                <p class="text-xs text-gray-500 mt-4 max-w-sm mx-auto">সেরা ফলাফলের জন্য, ছবিতে প্রধান ব্যক্তি বা বস্তুটি যেন পরিষ্কারভাবে বোঝা যায় এবং ছবিটি ঝাপসা না হয়।</p>
             </div>
         </section>
 
@@ -63,7 +64,7 @@
                 <h2 class="text-2xl font-bold text-gray-800 mb-6">আপনার ফলাফল</h2>
                 <div id="loading" class="flex flex-col items-center justify-center min-h-[300px]">
                     <div class="loader"></div>
-                    <p class="text-gray-600 mt-4">ব্যাকগ্রাউন্ড সরানো হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</p>
+                    <p id="loading-message" class="text-gray-600 mt-4">ছবি প্রসেস করা হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</p>
                 </div>
                 <div id="result-display" class="hidden">
                     <div class="max-w-xl mx-auto bg-white p-4 rounded-lg shadow-lg">
@@ -121,16 +122,16 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <div class="bg-white p-6 rounded-lg shadow-md feature-card">
-                        <h3 class="text-xl font-semibold mb-2">স্বয়ংক্রিয় ডিটেকশন</h3>
-                        <p class="text-gray-600">আমাদের AI স্বয়ংক্রিয়ভাবে ছবির প্রধান বস্তু শনাক্ত করে এবং বাকি অংশ মুছে ফেলে।</p>
+                        <h3 class="text-xl font-semibold mb-2">ব্রাউজার-ভিত্তিক AI</h3>
+                        <p class="text-gray-600">আপনার ছবি কোনো সার্ভারে না পাঠিয়ে, আপনার কম্পিউটারেই প্রসেস করা হয়। সম্পূর্ণ নিরাপদ।</p>
                     </div>
                     <div class="bg-white p-6 rounded-lg shadow-md feature-card">
                         <h3 class="text-xl font-semibold mb-2">উচ্চ-মানের আউটপুট</h3>
                         <p class="text-gray-600">কোনো মান না হারিয়ে হাই-রেজোলিউশনে স্বচ্ছ ব্যাকগ্রাউন্ডসহ ছবি ডাউনলোড করুন।</p>
                     </div>
                     <div class="bg-white p-6 rounded-lg shadow-md feature-card">
-                        <h3 class="text-xl font-semibold mb-2">সময় সাশ্রয়ী</h3>
-                        <p class="text-gray-600">ম্যানুয়াল এডিটিং-এর ঘণ্টার পর ঘণ্টার কাজ বাঁচিয়ে কয়েক সেকেন্ডে ফলাফল পান।</p>
+                        <h3 class="text-xl font-semibold mb-2">API-মুক্ত</h3>
+                        <p class="text-gray-600">কোনো বাইরের সার্ভিসের উপর নির্ভরশীল নয়। সীমাহীন ব্যবহার করুন, কোনো API Key ছাড়াই।</p>
                     </div>
                 </div>
             </div>
@@ -149,16 +150,16 @@
                             <span class="faq-arrow transform transition-transform duration-300">▼</span>
                         </button>
                         <div class="faq-answer hidden p-5 pt-0 text-gray-600">
-                            হ্যাঁ, আমাদের বেসিক ব্যাকগ্রাউন্ড রিমুভাল সার্ভিসটি বিনামূল্যে। remove.bg API ব্যবহারের একটি মাসিক কোটা থাকে, যা সাধারণ ব্যবহারের জন্য যথেষ্ট।
+                            হ্যাঁ, এই টুলটি সম্পূর্ণ বিনামূল্যে ব্যবহার করা যায়। কারণ এটি আপনার ব্রাউজারেই চলে এবং কোনো সার্ভার খরচ নেই।
                         </div>
                     </div>
                     <div class="bg-white rounded-lg shadow-sm">
                          <button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none">
-                            <span>আমি কোন ধরনের ছবি ব্যবহার করতে পারি?</span>
+                            <span>আমার ছবি কি নিরাপদ?</span>
                             <span class="faq-arrow transform transition-transform duration-300">▼</span>
                         </button>
                         <div class="faq-answer hidden p-5 pt-0 text-gray-600">
-                            আপনি মানুষ, পণ্য, প্রাণী, গাড়ি, বা যেকোনো বস্তুর ছবি ব্যবহার করতে পারেন। সেরা ফলাফলের জন্য, ছবিটি পরিষ্কার এবং ভালোভাবে আলোকিত হওয়া উচিত।
+                            আপনার ছবি ১০০% নিরাপদ। ছবিটি আপনার কম্পিউটারেই প্রসেস হয় এবং কখনোই আমাদের বা অন্য কোনো সার্ভারে আপলোড হয় না।
                         </div>
                     </div>
                 </div>
@@ -168,11 +169,11 @@
 
     <footer class="bg-gray-800 text-white py-12">
         <div class="container mx-auto px-6 text-center">
-            <p>&copy; ২০২৫ রিমুভবিজি। সর্বস্বত্ব সংরক্ষিত।</p>
+            <p>&copy; ২০২৫ প্রোরিমুভার। সর্বস্বত্ব সংরক্ষিত।</p>
         </div>
     </footer>
 
-    <script>
+    <script type="module">
         document.addEventListener('DOMContentLoaded', function () {
             const faqQuestions = document.querySelectorAll('.faq-question');
             faqQuestions.forEach(question => {
@@ -194,15 +195,28 @@
             const dropZone = document.getElementById('drop-zone');
             const resultSection = document.getElementById('result-section');
             const loading = document.getElementById('loading');
+            const loadingMessage = document.getElementById('loading-message');
             const resultDisplay = document.getElementById('result-display');
             const resultImage = document.getElementById('result-image');
             const downloadBtn = document.getElementById('download-btn');
             const errorMessage = document.getElementById('error-message');
             const historySection = document.getElementById('history-section');
             const historyContainer = document.getElementById('history-container');
-            
-            const apiKey = 'MKyYqxAq4QEoPcGSYZPUKSMK'; 
             let imageUpload = document.getElementById('image-upload');
+
+            let removeBackground;
+
+            async function loadModel() {
+                try {
+                    const { removeBackground: loadedRemoveBackground } = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal/dist/browser.js');
+                    removeBackground = loadedRemoveBackground;
+                } catch (error) {
+                    console.error("Failed to load the background removal model.", error);
+                    showError("AI মডেল লোড করা যায়নি। অনুগ্রহ করে পৃষ্ঠাটি রিফ্রেশ করুন।");
+                }
+            }
+
+            loadModel();
 
             function handleFileSelect(event) {
                 const files = event.target.files;
@@ -243,7 +257,12 @@
                 window.scrollTo({ top: resultSection.offsetTop, behavior: 'smooth' });
             }
 
-            function handleFile(file) {
+            async function handleFile(file) {
+                if (!removeBackground) {
+                     showError("AI মডেল এখনো প্রস্তুত নয়। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।");
+                     return;
+                }
+
                 if (!file || !file.type.startsWith('image/')) {
                     showError('অনুগ্রহ করে একটি সঠিক ইমেজ ফাইল নির্বাচন করুন।');
                     recreateImageInput();
@@ -251,26 +270,18 @@
                 }
                 
                 resetUIForNewUpload();
+                loadingMessage.textContent = 'ছবি প্রসেস করা হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...';
 
-                const formData = new FormData();
-                formData.append('image_file', file);
-                formData.append('size', 'auto');
+                try {
+                    const resultBlob = await removeBackground(file, {
+                        progress: (key, current, total) => {
+                             if(key === 'compute') {
+                                 const percent = Math.round((current / total) * 100);
+                                 loadingMessage.textContent = `AI মডেল গণনা করছে... ${percent}%`;
+                             }
+                        }
+                    });
 
-                fetch('https://api.remove.bg/v1.0/removebg', {
-                    method: 'POST',
-                    headers: { 'X-Api-Key': apiKey },
-                    body: formData
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.json().then(err => { 
-                            const errorMsg = err.errors ? err.errors[0].title : 'একটি অজানা সমস্যা হয়েছে।';
-                            throw new Error(errorMsg);
-                        });
-                    }
-                    return response.blob();
-                })
-                .then(blob => {
                     const reader = new FileReader();
                     reader.onloadend = () => {
                         const base64data = reader.result;
@@ -278,14 +289,14 @@
                         saveToHistory(base64data);
                         renderHistory();
                     };
-                    reader.readAsDataURL(blob);
-                })
-                .catch(error => {
-                    showError(`ত্রুটি: ${error.message}`);
-                })
-                .finally(() => {
+                    reader.readAsDataURL(resultBlob);
+
+                } catch (error) {
+                    console.error("Background removal failed:", error);
+                    showError(`একটি সমস্যা হয়েছে: ${error.message}`);
+                } finally {
                     recreateImageInput();
-                });
+                }
             }
 
             function displayResult(imageDataUrl) {

@@ -212,10 +212,7 @@
             
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => dropZone.addEventListener(eventName, preventDefaults, false));
 
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
+            function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
 
             dropZone.addEventListener('dragover', () => dropZone.classList.add('drag-over-style'));
             dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over-style'));
@@ -230,18 +227,25 @@
                 if (files.length > 0) handleFile(files[0]);
             });
 
-            function handleFile(file) {
-                if (!file || !file.type.startsWith('image/')) {
-                    showError('অনুগ্রহ করে একটি সঠিক ইমেজ ফাইল নির্বাচন করুন।');
-                    imageUpload.value = ''; // Reset input
-                    return;
-                }
-                
+            // *** নতুন ফাংশন: আপলোড করার আগে UI রিসেট করার জন্য ***
+            function resetUIForNewUpload() {
                 resultSection.classList.remove('hidden');
                 loading.classList.remove('hidden');
                 resultDisplay.classList.add('hidden');
                 errorMessage.classList.add('hidden');
+                resultImage.src = ''; // পুরনো ছবি মুছে ফেলা হচ্ছে
+                downloadBtn.href = '#'; // পুরনো ডাউনলোড লিঙ্ক মুছে ফেলা হচ্ছে
                 window.scrollTo({ top: resultSection.offsetTop, behavior: 'smooth' });
+            }
+
+            function handleFile(file) {
+                if (!file || !file.type.startsWith('image/')) {
+                    showError('অনুগ্রহ করে একটি সঠিক ইমেজ ফাইল নির্বাচন করুন।');
+                    imageUpload.value = '';
+                    return;
+                }
+                
+                resetUIForNewUpload(); // প্রতিটি আপলোডের আগে UI রিসেট করা হচ্ছে
 
                 const formData = new FormData();
                 formData.append('image_file', file);
@@ -275,8 +279,7 @@
                     showError(`ত্রুটি: ${error.message}`);
                 })
                 .finally(() => {
-                    // *** সমস্যার সমাধান: ইনপুট ফিল্ড রিসেট করা হচ্ছে ***
-                    imageUpload.value = '';
+                    imageUpload.value = ''; // ইনপুট ফিল্ড রিসেট করা হচ্ছে
                 });
             }
 
@@ -289,7 +292,6 @@
 
             function showError(message) {
                 loading.classList.add('hidden');
-                resultDisplay.classList.add('hidden');
                 errorMessage.textContent = message;
                 errorMessage.classList.remove('hidden');
             }
@@ -298,9 +300,7 @@
                 try {
                     const history = localStorage.getItem('bgRemovalHistory');
                     return history ? JSON.parse(history) : [];
-                } catch (e) {
-                    return [];
-                }
+                } catch (e) { return []; }
             }
 
             function saveToHistory(base64data) {
@@ -309,9 +309,7 @@
                 if (history.length > 5) history = history.slice(0, 5);
                 try {
                     localStorage.setItem('bgRemovalHistory', JSON.stringify(history));
-                } catch (e) {
-                    console.error("Failed to save history to localStorage:", e);
-                }
+                } catch (e) { console.error("Failed to save history:", e); }
             }
 
             function renderHistory() {
@@ -322,9 +320,6 @@
                     historySection.classList.add('hidden');
                 } else {
                     historySection.classList.remove('hidden');
-                    if (document.getElementById('no-history-msg')) {
-                         historyContainer.innerHTML = '';
-                    }
                     
                     history.forEach(imageDataUrl => {
                         const img = document.createElement('img');

@@ -16,8 +16,6 @@
         .cta-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px 0 rgba(0, 118, 255, 0.23); }
         .feature-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
         .feature-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .drag-over-style { border: 3px dashed #007BFF !important; background-color: #EBF8FF; }
         .history-thumbnail {
             width: 100px; height: 100px; object-fit: cover; border-radius: 8px; cursor: pointer;
@@ -28,7 +26,7 @@
         .processing-overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(255, 255, 255, 0.7);
+            background-color: rgba(255, 255, 255, 0.7); /* Lighter overlay */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -36,21 +34,28 @@
             z-index: 10;
             overflow: hidden;
         }
-
-        .sparkle-container-processing {
+        
+        /* New Animated Star/Particle CSS */
+        .animated-star-container {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; opacity: 0.7;
+            pointer-events: none;
+            overflow: hidden;
+            opacity: 1; /* Keep it visible */
         }
-        .sparkle {
-            position: absolute; background-color: #FFD700; border-radius: 50%;
-            opacity: 0; animation: sparkle-animation 1.5s ease-out infinite;
-            box-shadow: 0 0 5px #FFD700, 0 0 10px #FFD700;
+        .animated-star {
+            position: absolute;
+            background-color: #FFD700; /* Default gold */
+            border-radius: 50%;
+            opacity: 0;
+            animation: star-fade-move 3s linear infinite;
         }
-        @keyframes sparkle-animation {
-            0% { transform: scale(0) rotate(0deg); opacity: 0; }
-            50% { transform: scale(1) rotate(180deg); opacity: 0.8; }
-            100% { transform: scale(0) rotate(360deg); opacity: 0; }
+
+        @keyframes star-fade-move {
+            0% { transform: scale(0) translateY(0px) rotate(0deg); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 0.8; }
+            100% { transform: scale(1.2) translateY(-50px) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
@@ -93,9 +98,8 @@
                         <img id="result-image" src="" alt="প্রসেস করা ছবি" class="mx-auto rounded">
                         
                         <div id="processing-overlay" class="processing-overlay hidden">
-                             <div class="sparkle-container-processing"></div>
-                             <div class="relative z-10 flex flex-col items-center">
-                                <div class="loader"></div>
+                             <div class="animated-star-container"></div>
+                             <div class="relative z-20 flex flex-col items-center p-4 rounded-lg">
                                 <p class="text-gray-700 font-semibold mt-4">প্রসেস করা হচ্ছে...</p>
                              </div>
                         </div>
@@ -140,7 +144,7 @@
             const errorMessage = document.getElementById('error-message');
             const historySection = document.getElementById('history-section');
             const historyContainer = document.getElementById('history-container');
-            const sparkleContainer = document.querySelector('.sparkle-container-processing');
+            const animatedStarContainer = document.querySelector('.animated-star-container');
 
             const apiKey = 'MKyYqxAq4QEoPcGSYZPUKSMK'; 
             
@@ -150,23 +154,27 @@
             dropZone.addEventListener('drop', (event) => { dropZone.classList.remove('drag-over-style'); const files = event.dataTransfer.files; if (files.length > 0) handleFile(files[0]); });
             imageUpload.addEventListener('change', (event) => { const files = event.target.files; if (files.length > 0) handleFile(files[0]); });
 
-            function generateSparkles() {
-                sparkleContainer.innerHTML = ''; 
-                for (let i = 0; i < 15; i++) {
-                    const sparkle = document.createElement('div');
-                    sparkle.className = 'sparkle';
-                    const size = Math.random() * 12 + 8; 
-                    sparkle.style.width = `${size}px`;
-                    sparkle.style.height = `${size}px`;
-                    sparkle.style.left = `${Math.random() * 100}%`;
-                    sparkle.style.top = `${Math.random() * 100}%`;
-                    sparkle.style.animationDelay = `${Math.random() * 1.5}s`; 
-                    sparkleContainer.appendChild(sparkle);
+            const starColors = ['#FFD700', '#FFA07A', '#87CEEB', '#98FB98', '#FF69B4', '#ADFF2F']; // Various star colors
+
+            function generateAnimatedStars() {
+                animatedStarContainer.innerHTML = ''; 
+                for (let i = 0; i < 25; i++) { // More stars for a richer effect
+                    const star = document.createElement('div');
+                    star.className = 'animated-star';
+                    const size = Math.random() * 8 + 4; // Smaller stars
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    star.style.left = `${Math.random() * 100}%`;
+                    star.style.top = `${Math.random() * 100}%`;
+                    star.style.animationDelay = `${Math.random() * 2}s`; // Varying delays
+                    star.style.animationDuration = `${Math.random() * 2 + 2}s`; // Varying durations
+                    star.style.backgroundColor = starColors[Math.floor(Math.random() * starColors.length)]; // Random color
+                    animatedStarContainer.appendChild(star);
                 }
             }
 
-            function stopSparkleAnimation() {
-                 sparkleContainer.innerHTML = '';
+            function stopAnimatedStars() {
+                 animatedStarContainer.innerHTML = '';
             }
 
             function handleFile(file) {
@@ -181,8 +189,9 @@
                     resultDisplayWrapper.classList.remove('hidden');
                     errorMessage.classList.add('hidden');
                     resultImage.src = e.target.result;
+                    
                     processingOverlay.classList.remove('hidden');
-                    generateSparkles();
+                    generateAnimatedStars(); // Start animated stars during processing
                     window.scrollTo({ top: resultSection.offsetTop, behavior: 'smooth' });
 
                     const formData = new FormData();
@@ -211,7 +220,7 @@
                     .catch(error => { showError(`ত্রুটি: ${error.message}`); })
                     .finally(() => { 
                         processingOverlay.classList.add('hidden');
-                        stopSparkleAnimation();
+                        stopAnimatedStars(); // Stop animated stars after processing
                         imageUpload.value = ''; 
                     });
                 };
@@ -227,6 +236,8 @@
                 resultDisplayWrapper.classList.add('hidden');
                 errorMessage.textContent = message;
                 errorMessage.classList.remove('hidden');
+                processingOverlay.classList.add('hidden'); // Ensure overlay is hidden on error
+                stopAnimatedStars(); // Stop stars on error
             }
 
             function getHistory() { try { const history = localStorage.getItem('bgRemovalHistory'); return history ? JSON.parse(history) : []; } catch (e) { return []; } }
@@ -242,7 +253,7 @@
                             resultDisplayWrapper.classList.remove('hidden');
                             errorMessage.classList.add('hidden');
                             processingOverlay.classList.add('hidden');
-                            stopSparkleAnimation();
+                            stopAnimatedStars(); // Ensure stars are off when clicking history
                             displayFinalResult(imageDataUrl);
                             window.scrollTo({ top: resultSection.offsetTop, behavior: 'smooth' });
                         });

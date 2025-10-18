@@ -49,7 +49,7 @@
             <div class="container mx-auto px-6">
                 <h1 class="text-4xl md:text-6xl font-extrabold text-gray-800 leading-tight mb-4">ছবির ব্যাকগ্রাউন্ড সরান, সম্পূর্ণ বিনামূল্যে</h1>
                 <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">মাত্র এক ক্লিকে, যেকোনো ছবির ব্যাকগ্রাউন্ড স্বয়ংক্রিয়ভাবে এবং নিখুঁতভাবে মুছে ফেলুন।</p>
-                <div class="flex flex-col sm:flex-row justify-center items-center gap-4 pointer-events-none">
+                <div id="upload-container" class="flex flex-col sm:flex-row justify-center items-center gap-4 pointer-events-none">
                     <label for="image-upload" class="w-full sm:w-auto cursor-pointer bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg cta-button inline-block pointer-events-auto">
                         ছবি আপলোড করুন
                     </label>
@@ -84,7 +84,7 @@
             <div class="container mx-auto px-6 text-center">
                 <h2 class="text-2xl font-bold text-gray-800 mb-6">আপনার সাম্প্রতিক কাজ</h2>
                 <div id="history-container" class="flex gap-4 justify-center flex-wrap">
-                    <p id="no-history-msg" class="text-gray-500">এখানে এখনো কোনো কাজ নেই।</p>
+                    {/* History items will be injected here */}
                 </div>
             </div>
         </section>
@@ -198,7 +198,7 @@
 
             // Image Processing Logic
             const dropZone = document.getElementById('drop-zone');
-            const imageUpload = document.getElementById('image-upload');
+            const uploadContainer = document.getElementById('upload-container');
             const resultSection = document.getElementById('result-section');
             const loading = document.getElementById('loading');
             const resultDisplay = document.getElementById('result-display');
@@ -209,6 +209,25 @@
             const historyContainer = document.getElementById('history-container');
             
             const apiKey = 'MKyYqxAq4QEoPcGSYZPUKSMK'; 
+            let imageUpload = document.getElementById('image-upload');
+
+            function handleFileSelect(event) {
+                const files = event.target.files;
+                if (files.length > 0) {
+                    handleFile(files[0]);
+                }
+            }
+            
+            // *** চূড়ান্ত সমাধান: ইনপুট এলিমেন্ট পুনরায় তৈরি করা ***
+            function recreateImageInput() {
+                const oldInput = document.getElementById('image-upload');
+                const newInput = oldInput.cloneNode(true); // Create a fresh clone
+                oldInput.parentNode.replaceChild(newInput, oldInput); // Replace the old with the new
+                imageUpload = newInput; // Update reference
+                imageUpload.addEventListener('change', handleFileSelect); // Re-attach listener
+            }
+
+            imageUpload.addEventListener('change', handleFileSelect);
             
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => dropZone.addEventListener(eventName, preventDefaults, false));
 
@@ -222,30 +241,24 @@
                 if (files.length > 0) handleFile(files[0]);
             });
 
-            imageUpload.addEventListener('change', (event) => {
-                const files = event.target.files;
-                if (files.length > 0) handleFile(files[0]);
-            });
-
-            // *** নতুন ফাংশন: আপলোড করার আগে UI রিসেট করার জন্য ***
             function resetUIForNewUpload() {
                 resultSection.classList.remove('hidden');
                 loading.classList.remove('hidden');
                 resultDisplay.classList.add('hidden');
                 errorMessage.classList.add('hidden');
-                resultImage.src = ''; // পুরনো ছবি মুছে ফেলা হচ্ছে
-                downloadBtn.href = '#'; // পুরনো ডাউনলোড লিঙ্ক মুছে ফেলা হচ্ছে
+                resultImage.src = '';
+                downloadBtn.href = '#';
                 window.scrollTo({ top: resultSection.offsetTop, behavior: 'smooth' });
             }
 
             function handleFile(file) {
                 if (!file || !file.type.startsWith('image/')) {
                     showError('অনুগ্রহ করে একটি সঠিক ইমেজ ফাইল নির্বাচন করুন।');
-                    imageUpload.value = '';
+                    recreateImageInput(); // Reset even on error
                     return;
                 }
                 
-                resetUIForNewUpload(); // প্রতিটি আপলোডের আগে UI রিসেট করা হচ্ছে
+                resetUIForNewUpload();
 
                 const formData = new FormData();
                 formData.append('image_file', file);
@@ -279,7 +292,7 @@
                     showError(`ত্রুটি: ${error.message}`);
                 })
                 .finally(() => {
-                    imageUpload.value = ''; // ইনপুট ফিল্ড রিসেট করা হচ্ছে
+                    recreateImageInput(); // প্রতিটি প্রচেষ্টার পর ইনপুট এলিমেন্ট রিসেট করা হচ্ছে
                 });
             }
 

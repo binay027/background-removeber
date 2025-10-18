@@ -3,273 +3,334 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ফটো ব্যাকগ্রাউন্ড রিমুভার</title>
+    <title>ফটো এডিটর ও ব্যাকগ্রাউন্ড রিমুভার</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 
     <style>
-        body { font-family: 'Hind Siliguri', sans-serif; background-color: #F7F9FC; color: #1A202C; scroll-behavior: smooth; }
-        .gradient-bg { background: linear-gradient(135deg, #E0F7FA 0%, #FFFFFF 100%); }
-        .cta-button { transition: all 0.3s ease; box-shadow: 0 4px 14px 0 rgba(0, 118, 255, 0.39); }
-        .cta-button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px 0 rgba(0, 118, 255, 0.23); }
-        .feature-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
-        .drag-over-style { border: 3px dashed #007BFF !important; background-color: #EBF8FF; }
-        .history-thumbnail {
-            width: 100px; height: 100px; object-fit: cover; border-radius: 8px; cursor: pointer;
-            border: 2px solid #e2e8f0; transition: all 0.2s ease-in-out;
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f0f2f5; color: #1c1e21; scroll-behavior: smooth; }
+        .editor-bg { background-color: #e9ebee; }
+        .cta-button { transition: all 0.2s ease; }
+        .tool-button {
+            transition: all 0.2s ease-in-out;
+            border-bottom: 3px solid transparent;
         }
-        .history-thumbnail:hover { border-color: #3498db; transform: scale(1.05); }
-
-        .processing-overlay {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0, 0, 0, 0.4);
+        .tool-button.active {
+            color: #0d6efd;
+            border-bottom-color: #0d6efd;
+        }
+        .tool-button:hover { background-color: #e4e6e9; }
+        .color-palette-item, .bg-image-item {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            border: 2px solid transparent;
+        }
+        .color-palette-item:hover, .bg-image-item:hover { transform: scale(1.05); }
+        .color-palette-item.selected, .bg-image-item.selected { border-color: #0d6efd; }
+        #canvas-wrapper {
+            position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
-            border-radius: 0.5rem;
-            z-index: 10;
             overflow: hidden;
+            background-color: #ffffff;
+            background-image:
+                linear-gradient(45deg, #ccc 25%, transparent 25%),
+                linear-gradient(-45deg, #ccc 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #ccc 75%),
+                linear-gradient(-45deg, transparent 75%, #ccc 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
         }
-        
-        /* New Twinkling & Roaming Star Animation */
-        .animated-star-container {
+        #canvas {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
-        .animated-star {
-            position: absolute;
-            background-color: white;
-            border-radius: 50%;
-            opacity: 0;
-            animation: twinkle-roam 3s ease-in-out infinite;
+        .shadow-option {
+            cursor: pointer;
+            border: 1px solid #ccc;
+            padding: 8px;
+            border-radius: 6px;
         }
-
-        @keyframes twinkle-roam {
-            0% {
-                transform: scale(0.3) translateY(0px) rotate(0deg);
-                opacity: 0;
-            }
-            20% {
-                opacity: 1;
-            }
-            50% {
-                transform: scale(1.5) translateY(-50px) rotate(180deg);
-                opacity: 0.8;
-            }
-            100% {
-                transform: scale(0.3) translateY(-100px) rotate(360deg);
-                opacity: 0;
-            }
+         .shadow-option.selected {
+            border-color: #0d6efd;
+            background-color: #e7f3ff;
         }
     </style>
 </head>
 <body class="antialiased">
 
-    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="text-2xl font-bold text-blue-600"><span>রিমুভ<span class="text-gray-800">বিজি</span></span></div>
-            <div class="hidden md:flex space-x-6 items-center">
-                <a href="#features" class="text-gray-600 hover:text-blue-600 transition">ফিচার</a>
-                <a href="#how-it-works" class="text-gray-600 hover:text-blue-600 transition">কিভাবে কাজ করে</a>
-                <a href="#history-section" class="text-gray-600 hover:text-blue-600 transition">আপনার কাজ</a>
-                <a href="#faq" class="text-gray-600 hover:text-blue-600 transition">প্রশ্নাবলী</a>
-            </div>
-            <button class="bg-blue-600 text-white px-5 py-2 rounded-full font-semibold cta-button">লগইন করুন</button>
+    <header class="bg-white sticky top-0 z-50 shadow-md">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="text-2xl font-bold text-blue-600"><span>প্রো<span class="text-gray-800">এডিটর</span></span></div>
+            <a href="/" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold cta-button hover:bg-blue-700">নতুন ছবি</a>
         </nav>
     </header>
 
-    <main>
-        <section id="drop-zone" class="gradient-bg pt-20 pb-24 text-center border-4 border-dashed border-transparent">
-            <div class="container mx-auto px-6">
-                <h1 class="text-4xl md:text-6xl font-extrabold text-gray-800 leading-tight mb-4">ছবির ব্যাকগ্রাউন্ড সরান, সম্পূর্ণ বিনামূল্যে</h1>
-                <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">মাত্র এক ক্লিকে, যেকোনো ছবির ব্যাকগ্রাউন্ড স্বয়ংক্রিয়ভাবে এবং নিখুঁতভাবে মুছে ফেলুন।</p>
-                <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-                    <label for="image-upload" class="w-full sm:w-auto cursor-pointer bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg cta-button inline-block">
-                        ছবি আপলোড করুন
-                    </label>
-                    <input type="file" id="image-upload" class="hidden" accept="image/*">
-                    <p class="text-gray-500 text-sm">অথবা একটি ফাইল এখানে টেনে আনুন</p>
+    <main id="main-content">
+        <!-- Initial Upload Section -->
+        <section id="upload-section" class="flex flex-col items-center justify-center min-h-[calc(100vh-80px)]">
+            <div class="bg-white p-10 rounded-xl shadow-2xl text-center max-w-lg w-full">
+                <h1 class="text-3xl font-bold text-gray-800 mb-4">যেকোনো ছবির ব্যাকগ্রাউন্ড সরান</h1>
+                <p class="text-gray-600 mb-8">এবং এডিট করুন আপনার মনের মতো করে।</p>
+                <label for="image-upload" class="w-full cursor-pointer bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg cta-button inline-block hover:bg-blue-700">
+                    কম্পিউটার থেকে আপলোড করুন
+                </label>
+                <input type="file" id="image-upload" class="hidden" accept="image/*">
+                 <div id="loading" class="mt-8 hidden flex-col items-center">
+                    <div class="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
+                    <p class="text-gray-600 mt-4">ছবি প্রসেস করা হচ্ছে...</p>
                 </div>
             </div>
         </section>
 
-        <section id="result-section" class="py-10 hidden">
-            <div class="container mx-auto px-6 text-center">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">আপনার ফলাফল</h2>
-                
-                <div id="result-display-wrapper" class="hidden">
-                    <div class="relative max-w-xl mx-auto bg-white p-4 rounded-lg shadow-lg">
-                        <img id="result-image" src="" alt="প্রসেস করা ছবি" class="mx-auto rounded">
-                        
-                        <div id="processing-overlay" class="processing-overlay hidden">
-                             <div class="animated-star-container"></div>
+        <!-- Editor Section -->
+        <section id="editor-section" class="hidden editor-bg py-8">
+            <div class="container mx-auto px-6">
+                <!-- Toolbar -->
+                <div class="bg-white p-3 rounded-lg shadow-md mb-6 flex justify-center items-center gap-4 flex-wrap">
+                    <button id="bg-tool-btn" class="tool-button active px-4 py-2 font-semibold text-gray-700 rounded-md flex items-center gap-2"><i class="fas fa-image"></i> ব্যাকগ্রাউন্ড</button>
+                    <button id="shadow-tool-btn" class="tool-button px-4 py-2 font-semibold text-gray-700 rounded-md flex items-center gap-2"><i class="fas fa-moon"></i> শ্যাডো</button>
+                    <!-- More tools can be added here -->
+                    <div class="flex-grow"></div>
+                    <button id="download-btn" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold cta-button hover:bg-blue-700 flex items-center gap-2"><i class="fas fa-download"></i> ডাউনলোড</button>
+                </div>
+
+                <!-- Tool Panels -->
+                <div id="tool-panels" class="mb-6">
+                    <!-- Background Panel -->
+                    <div id="background-panel" class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="font-bold text-lg mb-4">ব্যাকগ্রাউন্ড পরিবর্তন করুন</h3>
+                        <div class="mb-4">
+                            <h4 class="font-semibold mb-2">রঙ</h4>
+                            <div class="flex flex-wrap gap-3 items-center">
+                                <div class="color-palette-item selected w-10 h-10 rounded-full border-2 border-blue-500 bg-transparent" style="background-image: url('data:image/svg+xml,%3Csvg width=\'10\' height=\'10\' viewBox=\'0 0 10 10\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 0L10 10M10 0L0 10\' stroke=\'%23ff0000\' stroke-width=\'1\'/%3E%3C/svg%3E');" data-bg="transparent"></div>
+                                <div class="color-palette-item w-10 h-10 rounded-full" style="background-color: #FFFFFF;" data-bg="#FFFFFF"></div>
+                                <div class="color-palette-item w-10 h-10 rounded-full" style="background-color: #000000;" data-bg="#000000"></div>
+                                <div class="color-palette-item w-10 h-10 rounded-full" style="background-color: #EF4444;" data-bg="#EF4444"></div>
+                                <div class="color-palette-item w-10 h-10 rounded-full" style="background-color: #3B82F6;" data-bg="#3B82F6"></div>
+                                <div class="color-palette-item w-10 h-10 rounded-full" style="background-color: #22C55E;" data-bg="#22C55E"></div>
+                                <label for="color-picker" class="w-10 h-10 rounded-full border-2 border-gray-300 flex items-center justify-center cursor-pointer text-xl">+</label>
+                                <input type="color" id="color-picker" class="invisible w-0 h-0">
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-2">ছবি</h4>
+                            <div class="flex flex-wrap gap-3">
+                                <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&q=80&w=200&auto=format&fit=crop" class="bg-image-item h-20 w-28 object-cover rounded-lg" data-bg-src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&q=80&w=1920&auto=format&fit=crop">
+                                <img src="https://images.unsplash.com/photo-1542281286-9e0a16bb7366?ixlib=rb-4.0.3&q=80&w=200&auto=format&fit=crop" class="bg-image-item h-20 w-28 object-cover rounded-lg" data-bg-src="https://images.unsplash.com/photo-1542281286-9e0a16bb7366?ixlib=rb-4.0.3&q=80&w=1920&auto=format&fit=crop">
+                                <img src="https://images.unsplash.com/photo-1553095066-5014bc7b7f2d?ixlib=rb-4.0.3&q=80&w=200&auto=format&fit=crop" class="bg-image-item h-20 w-28 object-cover rounded-lg" data-bg-src="https://images.unsplash.com/photo-1553095066-5014bc7b7f2d?ixlib=rb-4.0.3&q=80&w=1920&auto=format&fit=crop">
+                            </div>
                         </div>
                     </div>
-                    <a id="download-btn" href="#" download="background-removed-image.png" class="mt-6 inline-block bg-green-500 text-white px-8 py-3 rounded-full font-bold text-lg cta-button hover:bg-green-600">
-                        ডাউনলোড করুন
-                    </a>
+                    <!-- Shadow Panel -->
+                    <div id="shadow-panel" class="hidden bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="font-bold text-lg mb-4">ছায়া যোগ করুন</h3>
+                        <div class="flex gap-4">
+                            <div class="shadow-option selected text-center" data-shadow="none">
+                                <i class="fas fa-ban text-2xl mb-2"></i>
+                                <p>None</p>
+                            </div>
+                            <div class="shadow-option text-center" data-shadow="drop-shadow(5px 10px 8px rgba(0,0,0,0.4))">
+                               <i class="fas fa-arrow-down text-2xl mb-2"></i>
+                                <p>Perspective</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div id="error-message" class="hidden text-red-500 mt-4 bg-red-100 p-4 rounded-lg"></div>
+                <!-- Canvas -->
+                <div id="canvas-wrapper" class="w-full h-[60vh] rounded-lg shadow-inner">
+                    <canvas id="canvas"></canvas>
+                </div>
             </div>
         </section>
-
-        <section id="history-section" class="py-10 bg-gray-50 border-t hidden">
-            <div class="container mx-auto px-6 text-center">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">আপনার সাম্প্রতিক কাজ</h2>
-                <div id="history-container" class="flex gap-4 justify-center flex-wrap"></div>
-            </div>
-        </section>
-        
-        <section id="how-it-works" class="py-20 bg-white"><div class="container mx-auto px-6"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">মাত্র ৩টি সহজ ধাপে কাজ করে</h2></div><div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center"><div class="p-6"><div class="flex items-center justify-center h-20 w-20 mx-auto bg-blue-100 text-blue-600 rounded-full text-4xl mb-4">📤</div><h3 class="text-xl font-semibold mb-2">১. ছবি আপলোড করুন</h3><p class="text-gray-500">আপনার কম্পিউটার বা ফোন থেকে যেকোনো ফরম্যাটের ছবি বেছে নিন।</p></div><div class="p-6"><div class="flex items-center justify-center h-20 w-20 mx-auto bg-green-100 text-green-600 rounded-full text-4xl mb-4">✨</div><h3 class="text-xl font-semibold mb-2">২. AI প্রসেসিং</h3><p class="text-gray-500">আমাদের স্মার্ট AI কয়েক সেকেন্ডের মধ্যে স্বয়ংক্রিয়ভাবে ব্যাকগ্রাউন্ড মুছে ফেলবে।</p></div><div class="p-6"><div class="flex items-center justify-center h-20 w-20 mx-auto bg-purple-100 text-purple-600 rounded-full text-4xl mb-4">📥</div><h3 class="text-xl font-semibold mb-2">৩. ডাউনলোড করুন</h3><p class="text-gray-500">আপনার নতুন স্বচ্ছ ব্যাকগ্রাউন্ড সহ হাই-রেজোলিউশন ছবিটি ডাউনলোড করুন।</p></div></div></div></section>
-        <section id="features" class="py-20 bg-gray-50"><div class="container mx-auto px-6"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">আমাদের শক্তিশালী ফিচারসমূহ</h2></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">স্বয়ংক্রিয় ডিটেকশন</h3><p class="text-gray-600">আমাদের AI স্বয়ংক্রিয়ভাবে ছবির প্রধান বস্তু শনাক্ত করে এবং বাকি অংশ মুছে ফেলে।</p></div><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">উচ্চ-মানের আউটপুট</h3><p class="text-gray-600">কোনো মান না হারিয়ে হাই-রেজোলিউশনে স্বচ্ছ ব্যাকগ্রাউন্ডসহ ছবি ডাউনলোড করুন।</p></div><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">সময় সাশ্রয়ী</h3><p class="text-gray-600">ম্যানুয়াল এডিটিং-এর ঘণ্টার পর ঘণ্টার কাজ বাঁচিয়ে কয়েক সেকেন্ডে ফলাফল পান।</p></div></div></div></section>
-        <section id="faq" class="py-20 bg-white"><div class="container mx-auto px-6 max-w-3xl"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">সাধারণ জিজ্ঞাসা (FAQ)</h2></div><div class="space-y-4"><div class="bg-white rounded-lg shadow-sm"><button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none"><span>এই সার্ভিসটি কি সত্যিই বিনামূল্যে?</span><span class="faq-arrow transform transition-transform duration-300">▼</span></button><div class="faq-answer hidden p-5 pt-0 text-gray-600">হ্যাঁ, আমাদের বেসিক ব্যাকগ্রাউন্ড রিমুভাল সার্ভিসটি বিনামূল্যে। remove.bg API ব্যবহারের একটি মাসিক কোটা থাকে, যা সাধারণ ব্যবহারের জন্য যথেষ্ট।</div></div><div class="bg-white rounded-lg shadow-sm"><button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none"><span>আমি কোন ধরনের ছবি ব্যবহার করতে পারি?</span><span class="faq-arrow transform transition-transform duration-300">▼</span></button><div class="faq-answer hidden p-5 pt-0 text-gray-600">আপনি মানুষ, পণ্য, প্রাণী, গাড়ি, বা যেকোনো বস্তুর ছবি ব্যবহার করতে পারেন। সেরা ফলাফলের জন্য, ছবিটি পরিষ্কার এবং ভালোভাবে আলোকিত হওয়া উচিত।</div></div></div></div></section>
     </main>
-
-    <footer class="bg-gray-800 text-white py-12">
-        <div class="container mx-auto px-6 text-center"><p>&copy; ২০২৫ রিমুভবিজি। সর্বস্বত্ব সংরক্ষিত।</p></div>
-    </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const faqQuestions = document.querySelectorAll('.faq-question');
-            faqQuestions.forEach(question => { question.addEventListener('click', () => { const answer = question.nextElementSibling; const arrow = question.querySelector('.faq-arrow'); const isOpening = answer.classList.contains('hidden'); document.querySelectorAll('.faq-answer').forEach(ans => { if (!ans.classList.contains('hidden') && ans !== answer) { ans.classList.add('hidden'); ans.previousElementSibling.querySelector('.faq-arrow').style.transform = 'rotate(0deg)'; } }); answer.classList.toggle('hidden'); arrow.style.transform = isOpening ? 'rotate(180deg)' : 'rotate(0deg)'; }); });
-
-            const dropZone = document.getElementById('drop-zone');
+            const uploadSection = document.getElementById('upload-section');
+            const editorSection = document.getElementById('editor-section');
             const imageUpload = document.getElementById('image-upload');
-            const resultSection = document.getElementById('result-section');
-            const resultDisplayWrapper = document.getElementById('result-display-wrapper');
-            const resultImage = document.getElementById('result-image');
-            const processingOverlay = document.getElementById('processing-overlay');
+            const loading = document.getElementById('loading');
             const downloadBtn = document.getElementById('download-btn');
-            const errorMessage = document.getElementById('error-message');
-            const historySection = document.getElementById('history-section');
-            const historyContainer = document.getElementById('history-container');
-            const animatedStarContainer = document.querySelector('.animated-star-container');
 
-            const apiKey = 'MKyYqxAq4QEoPcGSYZPUKSMK'; 
+            const canvasWrapper = document.getElementById('canvas-wrapper');
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+
+            let originalImage = null; // Original image without background
+            let backgroundImage = null;
+            let backgroundColor = 'transparent';
+            let currentShadow = 'none';
+
+            const apiKey = 'MKyYqxAq4QEoPcGSYZPUKSMK';
+
+            // --- Tool Switching Logic ---
+            const bgToolBtn = document.getElementById('bg-tool-btn');
+            const shadowToolBtn = document.getElementById('shadow-tool-btn');
+            const backgroundPanel = document.getElementById('background-panel');
+            const shadowPanel = document.getElementById('shadow-panel');
+            const toolButtons = [bgToolBtn, shadowToolBtn];
+            const toolPanels = [backgroundPanel, shadowPanel];
+
+            function switchTool(activeBtn, activePanel) {
+                toolButtons.forEach(btn => btn.classList.remove('active'));
+                toolPanels.forEach(panel => panel.classList.add('hidden'));
+                activeBtn.classList.add('active');
+                activePanel.classList.remove('hidden');
+            }
+
+            bgToolBtn.addEventListener('click', () => switchTool(bgToolBtn, backgroundPanel));
+            shadowToolBtn.addEventListener('click', () => switchTool(shadowToolBtn, shadowPanel));
             
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => dropZone.addEventListener(eventName, e => {e.preventDefault(); e.stopPropagation();}));
-            dropZone.addEventListener('dragover', () => dropZone.classList.add('drag-over-style'));
-            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over-style'));
-            dropZone.addEventListener('drop', (event) => { dropZone.classList.remove('drag-over-style'); const files = event.dataTransfer.files; if (files.length > 0) handleFile(files[0]); });
-            imageUpload.addEventListener('change', (event) => { const files = event.target.files; if (files.length > 0) handleFile(files[0]); });
+            // --- Image Upload & Processing ---
+            imageUpload.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
 
-            const starColors = ['#FFFFFF', '#FFD700', '#FFA07A', '#87CEEB', '#98FB98', '#FF69B4'];
+                uploadSection.querySelector('label').classList.add('hidden');
+                loading.classList.remove('hidden');
 
-            function generateAnimatedStars() {
-                animatedStarContainer.innerHTML = ''; 
-                for (let i = 0; i < 60; i++) { // Increased star count to 60
-                    const star = document.createElement('div');
-                    star.className = 'animated-star';
-                    const size = Math.random() * 12 + 6; // Star size between 6px and 18px
-                    star.style.width = `${size}px`;
-                    star.style.height = `${size}px`;
-                    star.style.left = `${Math.random() * 100}%`;
-                    star.style.top = `${Math.random() * 100}%`;
-                    star.style.animationDelay = `${Math.random() * 3}s`;
-                    star.style.animationDuration = `${Math.random() * 3 + 2}s`;
-                    const starColor = starColors[Math.floor(Math.random() * starColors.length)];
-                    star.style.backgroundColor = starColor;
-                    star.style.boxShadow = `0 0 8px ${starColor}, 0 0 15px ${starColor}`;
-                    animatedStarContainer.appendChild(star);
-                }
-            }
+                const formData = new FormData();
+                formData.append('image_file', file);
+                formData.append('size', 'auto');
 
-            function stopAnimatedStars() {
-                 animatedStarContainer.innerHTML = '';
-            }
+                fetch('https://api.remove.bg/v1.0/removebg', {
+                    method: 'POST',
+                    headers: { 'X-Api-Key': apiKey },
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.blob();
+                })
+                .then(blob => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            originalImage = img;
+                            uploadSection.classList.add('hidden');
+                            editorSection.classList.remove('hidden');
+                            drawCanvas();
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(blob);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('ব্যাকগ্রাউন্ড সরাতে সমস্যা হয়েছে।');
+                    uploadSection.querySelector('label').classList.remove('hidden');
+                    loading.classList.add('hidden');
+                });
+            });
 
-            function handleFile(file) {
-                if (!file || !file.type.startsWith('image/')) { 
-                    showError('অনুগ্রহ করে একটি সঠিক ইমেজ ফাইল নির্বাচন করুন।'); 
-                    return; 
+            // --- Drawing Logic ---
+            function drawCanvas() {
+                if (!originalImage) return;
+
+                // Fit image within the wrapper while maintaining aspect ratio
+                const wrapperWidth = canvasWrapper.clientWidth;
+                const wrapperHeight = canvasWrapper.clientHeight;
+                const imgAspectRatio = originalImage.width / originalImage.height;
+                const wrapperAspectRatio = wrapperWidth / wrapperHeight;
+
+                let drawWidth, drawHeight;
+                if (imgAspectRatio > wrapperAspectRatio) {
+                    drawWidth = wrapperWidth * 0.8;
+                    drawHeight = drawWidth / imgAspectRatio;
+                } else {
+                    drawHeight = wrapperHeight * 0.8;
+                    drawWidth = drawHeight * imgAspectRatio;
                 }
                 
-                const originalImageReader = new FileReader();
-                originalImageReader.onload = function(e) {
-                    resultSection.classList.remove('hidden');
-                    resultDisplayWrapper.classList.remove('hidden');
-                    errorMessage.classList.add('hidden');
-                    resultImage.src = e.target.result;
-                    
-                    processingOverlay.classList.remove('hidden');
-                    generateAnimatedStars();
-                    window.scrollTo({ top: resultSection.offsetTop, behavior: 'smooth' });
+                canvas.width = wrapperWidth;
+                canvas.height = wrapperHeight;
 
-                    const formData = new FormData();
-                    formData.append('image_file', file);
-                    formData.append('size', 'auto');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                    fetch('https://api.remove.bg/v1.0/removebg', {
-                        method: 'POST',
-                        headers: { 'X-Api-Key': apiKey },
-                        body: formData
-                    })
-                    .then(response => {
-                        if (!response.ok) { return response.json().then(err => { const errorMsg = err.errors ? err.errors[0].title : 'একটি অজানা সমস্যা হয়েছে।'; throw new Error(errorMsg); }); }
-                        return response.blob();
-                    })
-                    .then(blob => {
-                        const processedImageReader = new FileReader();
-                        processedImageReader.onloadend = () => {
-                            const base64data = processedImageReader.result;
-                            displayFinalResult(base64data);
-                            saveToHistory(base64data);
-                            renderHistory();
-                        };
-                        processedImageReader.readAsDataURL(blob);
-                    })
-                    .catch(error => { showError(`ত্রুটি: ${error.message}`); })
-                    .finally(() => { 
-                        processingOverlay.classList.add('hidden');
-                        stopAnimatedStars();
-                        imageUpload.value = ''; 
-                    });
-                };
-                originalImageReader.readAsDataURL(file);
-            }
-
-            function displayFinalResult(imageDataUrl) {
-                resultImage.src = imageDataUrl;
-                downloadBtn.href = imageDataUrl;
-            }
-
-            function showError(message) {
-                resultDisplayWrapper.classList.add('hidden');
-                errorMessage.textContent = message;
-                errorMessage.classList.remove('hidden');
-                processingOverlay.classList.add('hidden');
-                stopAnimatedStars();
-            }
-
-            function getHistory() { try { const history = localStorage.getItem('bgRemovalHistory'); return history ? JSON.parse(history) : []; } catch (e) { return []; } }
-            function saveToHistory(base64data) { let history = getHistory(); history.unshift(base64data); if (history.length > 5) history = history.slice(0, 5); try { localStorage.setItem('bgRemovalHistory', JSON.stringify(history)); } catch (e) { console.error("Failed to save history:", e); } }
-            function renderHistory() {
-                const history = getHistory(); historyContainer.innerHTML = ''; 
-                if (history.length === 0) { historySection.classList.add('hidden'); } else {
-                    historySection.classList.remove('hidden');
-                    history.forEach(imageDataUrl => {
-                        const img = document.createElement('img'); img.src = imageDataUrl; img.className = 'history-thumbnail'; img.alt = 'Saved work';
-                        img.addEventListener('click', () => { 
-                            resultSection.classList.remove('hidden');
-                            resultDisplayWrapper.classList.remove('hidden');
-                            errorMessage.classList.add('hidden');
-                            processingOverlay.classList.add('hidden');
-                            stopAnimatedStars();
-                            displayFinalResult(imageDataUrl);
-                            window.scrollTo({ top: resultSection.offsetTop, behavior: 'smooth' });
-                        });
-                        historyContainer.appendChild(img);
-                    });
+                // Draw background
+                if (backgroundImage) {
+                    ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+                } else if (backgroundColor !== 'transparent') {
+                    ctx.fillStyle = backgroundColor;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
                 }
+
+                // Draw foreground image
+                ctx.filter = currentShadow;
+                ctx.drawImage(originalImage, 0, 0, drawWidth, drawHeight);
+                ctx.filter = 'none'; // Reset filter
             }
-            renderHistory();
+
+            // --- Background Controls ---
+            const colorPaletteItems = document.querySelectorAll('.color-palette-item');
+            const colorPicker = document.getElementById('color-picker');
+            const bgImageItems = document.querySelectorAll('.bg-image-item');
+
+            function updateBgSelection(selectedElement, panelSelector) {
+                 document.querySelectorAll(panelSelector).forEach(el => el.classList.remove('selected'));
+                 selectedElement.classList.add('selected');
+            }
+
+            colorPaletteItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    backgroundColor = item.dataset.bg;
+                    backgroundImage = null;
+                    updateBgSelection(item, '.color-palette-item');
+                    drawCanvas();
+                });
+            });
+            
+            colorPicker.addEventListener('input', (e) => {
+                 backgroundColor = e.target.value;
+                 backgroundImage = null;
+                 // Deselect all other colors
+                 document.querySelectorAll('.color-palette-item').forEach(el => el.classList.remove('selected'));
+                 drawCanvas();
+            });
+
+            bgImageItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const bgImg = new Image();
+                    bgImg.crossOrigin = "Anonymous"; // Important for canvas
+                    bgImg.onload = () => {
+                        backgroundImage = bgImg;
+                        backgroundColor = 'transparent';
+                        updateBgSelection(item, '.bg-image-item');
+                        drawCanvas();
+                    };
+                    bgImg.src = item.dataset.bgSrc;
+                });
+            });
+            
+            // --- Shadow Controls ---
+            const shadowOptions = document.querySelectorAll('.shadow-option');
+            shadowOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    currentShadow = option.dataset.shadow;
+                    updateBgSelection(option, '.shadow-option');
+                    drawCanvas();
+                });
+            });
+
+            // --- Download Logic ---
+            downloadBtn.addEventListener('click', () => {
+                const link = document.createElement('a');
+                link.download = 'edited-image.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+            
+            // Redraw canvas on window resize
+            window.addEventListener('resize', drawCanvas);
         });
     </script>
 </body>

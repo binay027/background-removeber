@@ -13,10 +13,12 @@
     <!-- Visualization & Content Choices: টুলের ধারণা -> লক্ষ্য: ব্যবহারকারীকে আকৃষ্ট করা এবং টুলটি ব্যবহারে উৎসাহিত করা। -> পদ্ধতি: একটি ইন্টারেক্টিভ এবং তথ্যবহুল ওয়েবপেজ। -> মিথস্ক্রিয়া: ছবি আপলোড বাটন, আগে-পরে তুলনা করার জন্য ইমেজ স্লাইডার, এবং FAQ অ্যাকর্ডিয়ন। -> ন্যায্যতা: এই ডিজাইনটি শুধুমাত্র তথ্য প্রদান করে না, বরং ব্যবহারকারীকে টুলের কার্যকারিতা بصريভাবে (visually) দেখানোর মাধ্যমে তার আস্থা অর্জন করে। ইমেজ স্লাইডারটি টুলের ক্ষমতা প্রমাণের জন্য সবচেয়ে কার্যকর উপায়। FAQ বিভাগটি সাধারণ প্রশ্নের উত্তর দিয়ে ব্যবহারকারীর দ্বিধা দূর করে। -> লাইব্রেরি/পদ্ধতি: শুধুমাত্র HTML, Tailwind CSS এবং Vanilla JavaScript ব্যবহার করা হয়েছে। -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
-        body { font-family: 'Hind Siliguri', sans-serif; background-color: #F7F9FC; color: #1A202C; }
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #F7F9FC; color: #1A202C; scroll-behavior: smooth; }
         .gradient-bg { background: linear-gradient(135deg, #E0F7FA 0%, #FFFFFF 100%); transition: background-color 0.3s ease; }
         .cta-button { transition: all 0.3s ease; box-shadow: 0 4px 14px 0 rgba(0, 118, 255, 0.39); }
         .cta-button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px 0 rgba(0, 118, 255, 0.23); }
+        .feature-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
         .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .drag-over-style { border: 3px dashed #007BFF !important; background-color: #EBF8FF; }
@@ -32,7 +34,13 @@
     <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="text-2xl font-bold text-blue-600"><span>রিমুভ<span class="text-gray-800">বিজি</span></span></div>
-            <a href="#history-section" class="text-gray-600 hover:text-blue-600 transition hidden md:inline">আপনার কাজ</a>
+            <div class="hidden md:flex space-x-6 items-center">
+                <a href="#features" class="text-gray-600 hover:text-blue-600 transition">ফিচার</a>
+                <a href="#how-it-works" class="text-gray-600 hover:text-blue-600 transition">কিভাবে কাজ করে</a>
+                <a href="#history-section" class="text-gray-600 hover:text-blue-600 transition">আপনার কাজ</a>
+                <a href="#faq" class="text-gray-600 hover:text-blue-600 transition">প্রশ্নাবলী</a>
+            </div>
+            <button class="bg-blue-600 text-white px-5 py-2 rounded-full font-semibold cta-button">লগইন করুন</button>
         </nav>
     </header>
 
@@ -72,7 +80,7 @@
         </section>
 
         <!-- History Section -->
-        <section id="history-section" class="py-10 bg-white border-t hidden">
+        <section id="history-section" class="py-10 bg-gray-50 border-t hidden">
             <div class="container mx-auto px-6 text-center">
                 <h2 class="text-2xl font-bold text-gray-800 mb-6">আপনার সাম্প্রতিক কাজ</h2>
                 <div id="history-container" class="flex gap-4 justify-center flex-wrap">
@@ -80,7 +88,84 @@
                 </div>
             </div>
         </section>
+        
+        <!-- How it works Section -->
+        <section id="how-it-works" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                     <h2 class="text-3xl md:text-4xl font-bold text-gray-800">মাত্র ৩টি সহজ ধাপে কাজ করে</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+                    <div class="p-6">
+                        <div class="flex items-center justify-center h-20 w-20 mx-auto bg-blue-100 text-blue-600 rounded-full text-4xl mb-4">📤</div>
+                        <h3 class="text-xl font-semibold mb-2">১. ছবি আপলোড করুন</h3>
+                        <p class="text-gray-500">আপনার কম্পিউটার বা ফোন থেকে যেকোনো ফরম্যাটের ছবি বেছে নিন।</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-center h-20 w-20 mx-auto bg-green-100 text-green-600 rounded-full text-4xl mb-4">✨</div>
+                        <h3 class="text-xl font-semibold mb-2">২. AI প্রসেসিং</h3>
+                        <p class="text-gray-500">আমাদের স্মার্ট AI কয়েক সেকেন্ডের মধ্যে স্বয়ংক্রিয়ভাবে ব্যাকগ্রাউন্ড মুছে ফেলবে।</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-center h-20 w-20 mx-auto bg-purple-100 text-purple-600 rounded-full text-4xl mb-4">📥</div>
+                        <h3 class="text-xl font-semibold mb-2">৩. ডাউনলোড করুন</h3>
+                        <p class="text-gray-500">আপনার নতুন স্বচ্ছ ব্যাকগ্রাউন্ড সহ হাই-রেজোলিউশন ছবিটি ডাউনলোড করুন।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
+        <!-- Features Section -->
+        <section id="features" class="py-20 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">আমাদের শক্তিশালী ফিচারসমূহ</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-md feature-card">
+                        <h3 class="text-xl font-semibold mb-2">স্বয়ংক্রিয় ডিটেকশন</h3>
+                        <p class="text-gray-600">আমাদের AI স্বয়ংক্রিয়ভাবে ছবির প্রধান বস্তু শনাক্ত করে এবং বাকি অংশ মুছে ফেলে।</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md feature-card">
+                        <h3 class="text-xl font-semibold mb-2">উচ্চ-মানের আউটপুট</h3>
+                        <p class="text-gray-600">কোনো মান না হারিয়ে হাই-রেজোলিউশনে স্বচ্ছ ব্যাকগ্রাউন্ডসহ ছবি ডাউনলোড করুন।</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md feature-card">
+                        <h3 class="text-xl font-semibold mb-2">সময় সাশ্রয়ী</h3>
+                        <p class="text-gray-600">ম্যানুয়াল এডিটিং-এর ঘণ্টার পর ঘণ্টার কাজ বাঁচিয়ে কয়েক সেকেন্ডে ফলাফল পান।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- FAQ Section -->
+        <section id="faq" class="py-20 bg-white">
+            <div class="container mx-auto px-6 max-w-3xl">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">সাধারণ জিজ্ঞাসা (FAQ)</h2>
+                </div>
+                <div class="space-y-4">
+                    <div class="bg-white rounded-lg shadow-sm">
+                        <button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none">
+                            <span>এই সার্ভিসটি কি সত্যিই বিনামূল্যে?</span>
+                            <span class="faq-arrow transform transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="faq-answer hidden p-5 pt-0 text-gray-600">
+                            হ্যাঁ, আমাদের বেসিক ব্যাকগ্রাউন্ড রিমুভাল সার্ভিসটি বিনামূল্যে। remove.bg API ব্যবহারের একটি মাসিক কোটা থাকে, যা সাধারণ ব্যবহারের জন্য যথেষ্ট।
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm">
+                         <button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none">
+                            <span>আমি কোন ধরনের ছবি ব্যবহার করতে পারি?</span>
+                            <span class="faq-arrow transform transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="faq-answer hidden p-5 pt-0 text-gray-600">
+                            আপনি মানুষ, পণ্য, প্রাণী, গাড়ি, বা যেকোনো বস্তুর ছবি ব্যবহার করতে পারেন। সেরা ফলাফলের জন্য, ছবিটি পরিষ্কার এবং ভালোভাবে আলোকিত হওয়া উচিত।
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="bg-gray-800 text-white py-12">
@@ -91,6 +176,29 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // FAQ Accordion Logic
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const answer = question.nextElementSibling;
+                    const arrow = question.querySelector('.faq-arrow');
+                    const isOpening = answer.classList.contains('hidden');
+                    
+                    // Close all other open answers
+                    document.querySelectorAll('.faq-answer').forEach(ans => {
+                        if (!ans.classList.contains('hidden') && ans !== answer) {
+                            ans.classList.add('hidden');
+                            ans.previousElementSibling.querySelector('.faq-arrow').style.transform = 'rotate(0deg)';
+                        }
+                    });
+
+                    // Toggle current answer
+                    answer.classList.toggle('hidden');
+                    arrow.style.transform = isOpening ? 'rotate(180deg)' : 'rotate(0deg)';
+                });
+            });
+
+            // Image Processing Logic
             const dropZone = document.getElementById('drop-zone');
             const imageUpload = document.getElementById('image-upload');
             const resultSection = document.getElementById('result-section');
@@ -103,13 +211,9 @@
             const historyContainer = document.getElementById('history-container');
             const noHistoryMsg = document.getElementById('no-history-msg');
 
-            // আপনার দেওয়া API Key এখানে যুক্ত করা হয়েছে।
             const apiKey = 'MKyYqxAq4QEoPcGSYZPUKSMK'; 
             
-            // Drag and Drop Event Listeners
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                dropZone.addEventListener(eventName, preventDefaults, false);
-            });
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => dropZone.addEventListener(eventName, preventDefaults, false));
 
             function preventDefaults(e) {
                 e.preventDefault();
@@ -118,14 +222,12 @@
 
             dropZone.addEventListener('dragover', () => dropZone.classList.add('drag-over-style'));
             dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over-style'));
-
             dropZone.addEventListener('drop', (event) => {
                 dropZone.classList.remove('drag-over-style');
                 const files = event.dataTransfer.files;
                 if (files.length > 0) handleFile(files[0]);
             });
 
-            // Button Click Event Listener
             imageUpload.addEventListener('change', (event) => {
                 const files = event.target.files;
                 if (files.length > 0) handleFile(files[0]);
@@ -188,34 +290,39 @@
                 resultDisplay.classList.add('hidden');
                 errorMessage.textContent = message;
                 errorMessage.classList.remove('hidden');
-                resultSection.classList.remove('hidden');
-                window.scrollTo({ top: resultSection.offsetTop, behavior: 'smooth' });
             }
 
             function getHistory() {
-                const history = localStorage.getItem('bgRemovalHistory');
-                return history ? JSON.parse(history) : [];
+                try {
+                    const history = localStorage.getItem('bgRemovalHistory');
+                    return history ? JSON.parse(history) : [];
+                } catch (e) {
+                    return [];
+                }
             }
 
             function saveToHistory(base64data) {
                 let history = getHistory();
-                history.unshift(base64data); // Add new image to the beginning
-                if (history.length > 5) {
-                    history = history.slice(0, 5); // Keep only the latest 5
+                history.unshift(base64data);
+                if (history.length > 5) history = history.slice(0, 5);
+                try {
+                    localStorage.setItem('bgRemovalHistory', JSON.stringify(history));
+                } catch (e) {
+                    console.error("Failed to save history to localStorage:", e);
                 }
-                localStorage.setItem('bgRemovalHistory', JSON.stringify(history));
             }
 
             function renderHistory() {
                 const history = getHistory();
-                historyContainer.innerHTML = ''; // Clear previous items
+                historyContainer.innerHTML = ''; 
 
                 if (history.length === 0) {
-                    noHistoryMsg.style.display = 'block';
                     historySection.classList.add('hidden');
                 } else {
                     historySection.classList.remove('hidden');
-                    if (noHistoryMsg) noHistoryMsg.style.display = 'none';
+                    if (document.getElementById('no-history-msg')) {
+                         historyContainer.innerHTML = '';
+                    }
                     
                     history.forEach(imageDataUrl => {
                         const img = document.createElement('img');
@@ -233,7 +340,6 @@
                 }
             }
             
-            // Render history on initial page load
             renderHistory();
         });
     </script>

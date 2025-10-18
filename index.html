@@ -12,6 +12,7 @@
 
     <style>
         body { font-family: 'Hind Siliguri', sans-serif; background-color: #f0f2f5; color: #1c1e21; scroll-behavior: smooth; }
+        .gradient-bg { background: linear-gradient(135deg, #E0F7FA 0%, #FFFFFF 100%); }
         .cta-button { transition: all 0.2s ease; }
         .tool-button { transition: all 0.2s ease-in-out; border-bottom: 3px solid transparent; }
         .tool-button.active { color: #0d6efd; border-bottom-color: #0d6efd; }
@@ -25,7 +26,6 @@
             background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%);
             background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
         }
-        #canvas { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
         .shadow-option { cursor: pointer; border: 1px solid #ccc; padding: 8px; border-radius: 6px; }
         .shadow-option.selected { border-color: #0d6efd; background-color: #e7f3ff; }
         .drag-over-style { border: 3px dashed #007BFF !important; background-color: #EBF8FF; }
@@ -67,30 +67,28 @@
         
         <section id="upload-section">
             <div id="drop-zone" class="gradient-bg pt-20 pb-24 text-center border-4 border-dashed border-transparent rounded-xl">
-                <div class="container mx-auto px-6">
-                    <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 leading-tight mb-4">ছবির ব্যাকগ্রাউন্ড সরান ও এডিট করুন</h1>
-                    <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-8">এক ক্লিকে ব্যাকগ্রাউন্ড মুছে ফেলুন এবং আপনার মনের মতো করে নতুন রূপ দিন।</p>
-                    <label for="image-upload" class="w-full sm:w-auto cursor-pointer bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg cta-button inline-block">
-                        ছবি আপলোড করুন
-                    </label>
-                    <input type="file" id="image-upload" class="hidden" accept="image/*">
-                    <p class="text-gray-500 text-sm mt-4">অথবা একটি ফাইল এখানে টেনে আনুন</p>
-                </div>
+                <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 leading-tight mb-4">ছবির ব্যাকগ্রাউন্ড সরান ও এডিট করুন</h1>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-8">এক ক্লিকে ব্যাকগ্রাউন্ড মুছে ফেলুন এবং আপনার মনের মতো করে নতুন রূপ দিন।</p>
+                <label for="image-upload" class="w-full sm:w-auto cursor-pointer bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg cta-button inline-block">
+                    ছবি আপলোড করুন
+                </label>
+                <input type="file" id="image-upload" class="hidden" accept="image/*">
+                <p class="text-gray-500 text-sm mt-4">অথবা একটি ফাইল এখানে টেনে আনুন</p>
             </div>
         </section>
 
         <section id="editor-section" class="hidden">
-             <!-- This section dynamically shows processing animation OR the final editor -->
+            <!-- This section's content is generated dynamically by JS -->
         </section>
 
         <div id="info-sections">
             <section id="history-section" class="py-12 bg-gray-50 rounded-xl mt-8"><div class="container mx-auto px-6 text-center"><h2 class="text-3xl font-bold text-gray-800 mb-6">আপনার সাম্প্রতিক কাজ</h2><div id="history-container" class="flex gap-4 justify-center flex-wrap"></div></div></section>
-            <section id="how-it-works" class="py-20 bg-white"><div class="container mx-auto px-6"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">মাত্র ৩টি সহজ ধাপে কাজ করে</h2></div><div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center"><div class="p-6"><div class="flex items-center justify-center h-20 w-20 mx-auto bg-blue-100 text-blue-600 rounded-full text-4xl mb-4">📤</div><h3 class="text-xl font-semibold mb-2">১. ছবি আপলোড করুন</h3><p class="text-gray-500">আপনার কম্পিউটার বা ফোন থেকে যেকোনো ফরম্যাটের ছবি বেছে নিন।</p></div><div class="p-6"><div class="flex items-center justify-center h-20 w-20 mx-auto bg-green-100 text-green-600 rounded-full text-4xl mb-4">✨</div><h3 class="text-xl font-semibold mb-2">২. AI প্রসেসিং</h3><p class="text-gray-500">আমাদের স্মার্ট AI কয়েক সেকেন্ডের মধ্যে স্বয়ংক্রিয়ভাবে ব্যাকগ্রাউন্ড মুছে ফেলবে।</p></div><div class="p-6"><div class="flex items-center justify-center h-20 w-20 mx-auto bg-purple-100 text-purple-600 rounded-full text-4xl mb-4">📥</div><h3 class="text-xl font-semibold mb-2">৩. ডাউনলোড ও এডিট</h3><p class="text-gray-500">আপনার নতুন ছবি ডাউনলোড করুন অথবা আমাদের এডিটরে নতুন রূপ দিন।</p></div></div></div></section>
-            <section id="features" class="py-20 bg-gray-50"><div class="container mx-auto px-6"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">আমাদের শক্তিশালী ফিচারসমূহ</h2></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">শক্তিশালী এডিটর</h3><p class="text-gray-600">ব্যাকগ্রাউন্ড রিমুভ করার পর নতুন রঙ, ছবি বা শ্যাডো যোগ করে ছবিকে আকর্ষণীয় করে তুলুন।</p></div><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">উচ্চ-মানের আউটপুট</h3><p class="text-gray-600">কোনো মান না হারিয়ে হাই-রেজোলিউশনে স্বচ্ছ ব্যাকগ্রাউন্ডসহ ছবি ডাউনলোড করুন।</p></div><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">সময় সাশ্রয়ী</h3><p class="text-gray-600">ম্যানুয়াল এডিটিং-এর ঘণ্টার পর ঘণ্টার কাজ বাঁচিয়ে কয়েক সেকেন্ডে ফলাফল পান।</p></div></div></div></section>
-            <section id="faq" class="py-20 bg-white"><div class="container mx-auto px-6 max-w-3xl"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">সাধারণ জিজ্ঞাসা (FAQ)</h2></div><div class="space-y-4"><div class="bg-white rounded-lg shadow-sm"><button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none"><span>এই সার্ভিসটি কি সত্যিই বিনামূল্যে?</span><span class="faq-arrow transform transition-transform duration-300">▼</span></button><div class="faq-answer hidden p-5 pt-0 text-gray-600">হ্যাঁ, আমাদের বেসিক ব্যাকগ্রাউন্ড রিমুভাল সার্ভিসটি বিনামূল্যে। remove.bg API ব্যবহারের একটি মাসিক কোটা থাকে, যা সাধারণ ব্যবহারের জন্য যথেষ্ট।</div></div><div class="bg-white rounded-lg shadow-sm"><button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none"><span>আমি কোন ধরনের ছবি ব্যবহার করতে পারি?</span><span class="faq-arrow transform transition-transform duration-300">▼</span></button><div class="faq-answer hidden p-5 pt-0 text-gray-600">আপনি মানুষ, পণ্য, প্রাণী, গাড়ি, বা যেকোনো বস্তুর ছবি ব্যবহার করতে পারেন। সেরা ফলাফলের জন্য, ছবিটি পরিষ্কার এবং ভালোভাবে আলোকিত হওয়া উচিত।</div></div></div></div></section>
+            <section id="how-it-works" class="py-20 bg-white mt-8 rounded-xl"><div class="container mx-auto px-6"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">মাত্র ৩টি সহজ ধাপে কাজ করে</h2></div><div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center"><div class="p-6"><div class="flex items-center justify-center h-20 w-20 mx-auto bg-blue-100 text-blue-600 rounded-full text-4xl mb-4">📤</div><h3 class="text-xl font-semibold mb-2">১. ছবি আপলোড করুন</h3><p class="text-gray-500">আপনার কম্পিউটার বা ফোন থেকে যেকোনো ফরম্যাটের ছবি বেছে নিন।</p></div><div class="p-6"><div class="flex items-center justify-center h-20 w-20 mx-auto bg-green-100 text-green-600 rounded-full text-4xl mb-4">✨</div><h3 class="text-xl font-semibold mb-2">২. AI প্রসেসিং</h3><p class="text-gray-500">আমাদের স্মার্ট AI কয়েক সেকেন্ডের মধ্যে স্বয়ংক্রিয়ভাবে ব্যাকগ্রাউন্ড মুছে ফেলবে।</p></div><div class="p-6"><div class="flex items-center justify-center h-20 w-20 mx-auto bg-purple-100 text-purple-600 rounded-full text-4xl mb-4">📥</div><h3 class="text-xl font-semibold mb-2">৩. ডাউনলোড ও এডিট</h3><p class="text-gray-500">আপনার নতুন ছবি ডাউনলোড করুন অথবা আমাদের এডিটরে নতুন রূপ দিন।</p></div></div></div></section>
+            <section id="features" class="py-20 bg-gray-50 mt-8 rounded-xl"><div class="container mx-auto px-6"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">আমাদের শক্তিশালী ফিচারসমূহ</h2></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">শক্তিশালী এডিটর</h3><p class="text-gray-600">ব্যাকগ্রাউন্ড রিমুভ করার পর নতুন রঙ, ছবি বা শ্যাডো যোগ করে ছবিকে আকর্ষণীয় করে তুলুন।</p></div><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">উচ্চ-মানের আউটপুট</h3><p class="text-gray-600">কোনো মান না হারিয়ে হাই-রেজোলিউশনে স্বচ্ছ ব্যাকগ্রাউন্ডসহ ছবি ডাউনলোড করুন।</p></div><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">সময় সাশ্রয়ী</h3><p class="text-gray-600">ম্যানুয়াল এডিটিং-এর ঘণ্টার পর ঘণ্টার কাজ বাঁচিয়ে কয়েক সেকেন্ডে ফলাফল পান।</p></div></div></div></section>
+            <section id="faq" class="py-20 bg-white mt-8 rounded-xl"><div class="container mx-auto px-6 max-w-3xl"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">সাধারণ জিজ্ঞাসা (FAQ)</h2></div><div class="space-y-4"><div class="bg-white rounded-lg shadow-sm"><button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none"><span>এই সার্ভিসটি কি সত্যিই বিনামূল্যে?</span><span class="faq-arrow transform transition-transform duration-300">▼</span></button><div class="faq-answer hidden p-5 pt-0 text-gray-600">হ্যাঁ, আমাদের বেসিক ব্যাকগ্রাউন্ড রিমুভাল সার্ভিসটি বিনামূল্যে। remove.bg API ব্যবহারের একটি মাসিক কোটা থাকে, যা সাধারণ ব্যবহারের জন্য যথেষ্ট।</div></div><div class="bg-white rounded-lg shadow-sm"><button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none"><span>আমি কোন ধরনের ছবি ব্যবহার করতে পারি?</span><span class="faq-arrow transform transition-transform duration-300">▼</span></button><div class="faq-answer hidden p-5 pt-0 text-gray-600">আপনি মানুষ, পণ্য, প্রাণী, গাড়ি, বা যেকোনো বস্তুর ছবি ব্যবহার করতে পারেন। সেরা ফলাফলের জন্য, ছবিটি পরিষ্কার এবং ভালোভাবে আলোকিত হওয়া উচিত।</div></div></div></div></section>
         </div>
     </main>
-    <footer class="bg-gray-800 text-white py-12"><div class="container mx-auto px-6 text-center"><p>&copy; ২০২৫ প্রোএডিটর। সর্বস্বত্ব সংরক্ষিত।</p></div></footer>
+    <footer class="bg-gray-800 text-white py-12 mt-8"><div class="container mx-auto px-6 text-center"><p>&copy; ২০২৫ প্রোএডিটর। সর্বস্বত্ব সংরক্ষিত।</p></div></footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -116,9 +114,9 @@
                 editorSection.classList.add('hidden');
                 uploadSection.classList.remove('hidden');
                 infoSections.classList.remove('hidden');
-                landingMenu.classList.remove('hidden');
+                landingMenu.style.display = 'flex';
                 headerActionBtn.textContent = 'লগইন করুন';
-                headerActionBtn.onclick = null; // Reset to default behavior
+                headerActionBtn.onclick = null; // Reset
                 renderHistory();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
@@ -127,11 +125,11 @@
                 uploadSection.classList.add('hidden');
                 infoSections.classList.add('hidden');
                 editorSection.classList.remove('hidden');
-                landingMenu.classList.add('hidden');
+                landingMenu.style.display = 'none';
                 headerActionBtn.textContent = 'নতুন ছবি';
                 headerActionBtn.onclick = showLandingView;
                 
-                // Editor HTML structure
+                // Inject editor HTML
                 editorSection.innerHTML = `
                     <div class="relative max-w-4xl mx-auto mb-6">
                         <img id="processing-image-preview" src="" alt="প্রসেসিং প্রিভিউ" class="mx-auto rounded-lg max-h-[70vh] shadow-lg">
@@ -165,7 +163,7 @@
             function handleFile(file) {
                 if (!file || !file.type.startsWith('image/')) { alert('অনুগ্রহ করে একটি সঠিক ইমেজ ফাইল নির্বাচন করুন।'); return; }
 
-                showEditorView(); // Immediately switch to editor view shell
+                showEditorView(); // Immediately switch to editor shell
                 const processingImagePreview = document.getElementById('processing-image-preview');
                 const processingAnimationOverlay = document.getElementById('processing-animation-overlay');
                 
@@ -196,19 +194,10 @@
                             img.onload = () => {
                                 originalImage = img;
                                 saveToHistory(base64data);
-                                
-                                // Transition from processing to editor UI
                                 processingImagePreview.classList.add('hidden');
                                 processingAnimationOverlay.classList.add('hidden');
                                 stopAnimatedStars();
                                 document.getElementById('editor-ui').classList.remove('hidden');
-                                
-                                // Setup editor state
-                                document.querySelector('.color-palette-item[data-bg="transparent"]').classList.add('selected');
-                                document.querySelector('.shadow-option[data-shadow="none"]').classList.add('selected');
-                                backgroundColor = 'transparent';
-                                backgroundImage = null;
-                                currentShadow = 'none';
                                 drawCanvas();
                             };
                             img.src = base64data;
@@ -227,6 +216,7 @@
             // --- Editor Setup ---
             function setupEditorEventListeners() {
                 const canvas = document.getElementById('canvas');
+                if(!canvas) return; // Guard clause
                 const ctx = canvas.getContext('2d');
                 const bgToolBtn = document.getElementById('bg-tool-btn');
                 const shadowToolBtn = document.getElementById('shadow-tool-btn');
@@ -261,6 +251,7 @@
                     ctx.drawImage(originalImage, x, y, drawWidth, drawHeight);
                     ctx.filter = 'none';
                 }
+                window.drawCanvas = drawCanvas; // Make it globally accessible for resize
 
                 function switchTool(activeBtn) {
                     if (activeBtn === bgToolBtn) {
@@ -286,8 +277,7 @@
                     const getRandomColor = () => `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`;
                     backgroundColor = { color1: getRandomColor(), color2: getRandomColor() };
                     backgroundImage = null;
-                    updateSelection(null, '.color-palette-item, .bg-image-item');
-                    drawCanvas();
+                    updateSelection(null, '.color-palette-item, .bg-image-item'); drawCanvas();
                 });
                 document.querySelectorAll('.bg-image-item').forEach(item => {
                     item.addEventListener('click', () => { const bgImg = new Image(); bgImg.crossOrigin = "Anonymous"; bgImg.onload = () => { backgroundImage = bgImg; backgroundColor = 'transparent'; updateSelection(item, '.bg-image-item, .color-palette-item'); drawCanvas(); }; bgImg.src = item.dataset.bgSrc; });
@@ -303,14 +293,14 @@
                 });
                 downloadBtn.addEventListener('click', () => { const link = document.createElement('a'); link.download = 'edited-image.png'; link.href = canvas.toDataURL('image/png'); link.click(); });
                 window.addEventListener('resize', drawCanvas);
-                // Also call drawCanvas initially when editor is shown
                 setTimeout(drawCanvas, 0); 
             }
             
             // --- Animation Logic ---
             const starColors = ['#FFFFFF', '#FFD700', '#FFA07A', '#87CEEB', '#98FB98', '#FF69B4'];
             function generateAnimatedStars() {
-                const animatedStarContainer = document.getElementById('processing-animation-overlay').querySelector('.animated-star-container');
+                const animatedStarContainer = document.querySelector('#processing-animation-overlay .animated-star-container');
+                if(!animatedStarContainer) return;
                 animatedStarContainer.innerHTML = ''; 
                 for (let i = 0; i < 60; i++) {
                     const star = document.createElement('div'); star.className = 'animated-star';
@@ -324,7 +314,7 @@
                 }
             }
             function stopAnimatedStars() { 
-                const animatedStarContainer = document.getElementById('processing-animation-overlay').querySelector('.animated-star-container');
+                const animatedStarContainer = document.querySelector('#processing-animation-overlay .animated-star-container');
                 if(animatedStarContainer) animatedStarContainer.innerHTML = ''; 
             }
 
@@ -339,7 +329,14 @@
                         const img = document.createElement('img'); img.src = imageDataUrl; img.className = 'history-thumbnail'; img.alt = 'Saved work';
                         img.addEventListener('click', () => { 
                             const imageToEdit = new Image();
-                            imageToEdit.onload = () => { originalImage = imageToEdit; showEditorView(); };
+                            imageToEdit.onload = () => {
+                                originalImage = imageToEdit;
+                                showEditorView();
+                                // Directly show final editor without processing animation
+                                document.getElementById('processing-image-preview').classList.add('hidden');
+                                document.getElementById('editor-ui').classList.remove('hidden');
+                                drawCanvas();
+                            };
                             imageToEdit.src = imageDataUrl;
                         });
                         historyContainer.appendChild(img);

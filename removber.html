@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ফটো ব্যাকগ্রাউন্ড রিমুভার | তাৎক্ষণিক ও নিখুঁত</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Neutrals with a Vibrant Blue Accent -->
+    <!-- Application Structure Plan: একটি সিঙ্গেল-পেজ ল্যান্ডিং পেজ ডিজাইন করা হয়েছে যা ব্যবহারকারীকে একটি পরিষ্কার এবং যৌক্তিক পথে চালিত করে। প্রথমে একটি আকর্ষণীয় হিরো সেকশন যা টুলের মূল সুবিধা তুলে ধরে এবং ছবি আপলোডের জন্য একটি বড় কল-টু-অ্যাকশন (CTA) বাটন রয়েছে। এর পরে 'কিভাবে কাজ করে' সেকশনটি সহজ ধাপে প্রক্রিয়াটি ব্যাখ্যা করে। 'ফিচার' এবং 'ব্যবহারের ক্ষেত্র' সেকশনগুলো টুলের ক্ষমতা এবং উপযোগিতা তুলে ধরে। একটি ইন্টারেক্টিভ 'আগে ও পরে' স্লাইডার ব্যবহারকারীর বিশ্বাস অর্জন করতে সাহায্য করে। সবশেষে, একটি FAQ এবং চূড়ান্ত CTA সেকশন ব্যবহারকারীর সম্ভাব্য প্রশ্নগুলোর উত্তর দেয় এবং তাকে টুলটি ব্যবহারে উৎসাহিত করে। এই কাঠামোটি ব্যবহারকারীকে তথ্য দিয়ে শিক্ষিত করা এবং তাকে টুলটি ব্যবহারে আত্মবিশ্বাসী করে তোলার জন্য সর্বোত্তম। -->
+    <!-- Visualization & Content Choices: টুলের ধারণা -> লক্ষ্য: ব্যবহারকারীকে আকৃষ্ট করা এবং টুলটি ব্যবহারে উৎসাহিত করা। -> পদ্ধতি: একটি ইন্টারেক্টিভ এবং তথ্যবহুল ওয়েবপেজ। -> মিথস্ক্রিয়া: ছবি আপলোড বাটন, আগে-পরে তুলনা করার জন্য ইমেজ স্লাইডার, এবং FAQ অ্যাকর্ডিয়ন। -> ন্যায্যতা: এই ডিজাইনটি শুধুমাত্র তথ্য প্রদান করে না, বরং ব্যবহারকারীকে টুলের কার্যকারিতা بصريভাবে (visually) দেখানোর মাধ্যমে তার আস্থা অর্জন করে। ইমেজ স্লাইডারটি টুলের ক্ষমতা প্রমাণের জন্য সবচেয়ে কার্যকর উপায়। FAQ বিভাগটি সাধারণ প্রশ্নের উত্তর দিয়ে ব্যবহারকারীর দ্বিধা দূর করে। -> লাইব্রেরি/পদ্ধতি: শুধুমাত্র HTML, Tailwind CSS এবং Vanilla JavaScript ব্যবহার করা হয়েছে। -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #F7F9FC;
+            color: #1A202C;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #E0F7FA 0%, #FFFFFF 100%);
+        }
+        .cta-button {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px 0 rgba(0, 118, 255, 0.39);
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px 0 rgba(0, 118, 255, 0.23);
+        }
+        .feature-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+        .comparison-slider {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .comparison-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+        .comparison-image-before {
+            clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+        }
+        .slider-handle {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 4px;
+            height: 100%;
+            background-color: white;
+            cursor: ew-resize;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .slider-handle-button {
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border-radius: 50%;
+            color: #007BFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            user-select: none;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-blue-600">
+                <span>রিমুভ<span class="text-gray-800">বিজি</span></span>
+            </div>
+            <div class="hidden md:flex space-x-6 items-center">
+                <a href="#features" class="text-gray-600 hover:text-blue-600 transition">ফিচার</a>
+                <a href="#how-it-works" class="text-gray-600 hover:text-blue-600 transition">কিভাবে কাজ করে</a>
+                <a href="#faq" class="text-gray-600 hover:text-blue-600 transition">প্রশ্নাবলী</a>
+            </div>
+            <button class="bg-blue-600 text-white px-5 py-2 rounded-full font-semibold cta-button">লগইন করুন</button>
+        </nav>
+    </header>
+
+    <main>
+        <section class="gradient-bg pt-20 pb-24 text-center">
+            <div class="container mx-auto px-6">
+                <h1 class="text-4xl md:text-6xl font-extrabold text-gray-800 leading-tight mb-4">
+                    ছবির ব্যাকগ্রাউন্ড সরান, সম্পূর্ণ বিনামূল্যে
+                </h1>
+                <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+                    মাত্র এক ক্লিকে, আমাদের AI প্রযুক্তি ব্যবহার করে যেকোনো ছবির ব্যাকগ্রাউন্ড স্বয়ংক্রিয়ভাবে এবং নিখুঁতভাবে মুছে ফেলুন।
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                    <label for="image-upload" class="w-full sm:w-auto cursor-pointer bg-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg cta-button inline-block">
+                        ছবি আপলোড করুন
+                    </label>
+                    <input type="file" id="image-upload" class="hidden">
+                    <p class="text-gray-500 text-sm">অথবা একটি ফাইল এখানে টেনে আনুন</p>
+                </div>
+                <p class="text-xs text-gray-400 mt-4">কোনো রেজিস্ট্রেশনের প্রয়োজন নেই।</p>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">মাত্র ৩টি সহজ ধাপে কাজ করে</h2>
+                    <p class="text-gray-600 mt-2">আমাদের টুলটি ব্যবহার করা অত্যন্ত সহজ এবং দ্রুত।</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+                    <div class="p-6">
+                        <div class="flex items-center justify-center h-20 w-20 mx-auto bg-blue-100 text-blue-600 rounded-full text-4xl mb-4">📤</div>
+                        <h3 class="text-xl font-semibold mb-2">১. ছবি আপলোড করুন</h3>
+                        <p class="text-gray-500">আপনার কম্পিউটার বা ফোন থেকে যেকোনো ফরম্যাটের ছবি বেছে নিন।</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-center h-20 w-20 mx-auto bg-green-100 text-green-600 rounded-full text-4xl mb-4">✨</div>
+                        <h3 class="text-xl font-semibold mb-2">২. AI প্রসেসিং</h3>
+                        <p class="text-gray-500">আমাদের স্মার্ট AI কয়েক সেকেন্ডের মধ্যে স্বয়ংক্রিয়ভাবে ব্যাকগ্রাউন্ড মুছে ফেলবে।</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-center h-20 w-20 mx-auto bg-purple-100 text-purple-600 rounded-full text-4xl mb-4">📥</div>
+                        <h3 class="text-xl font-semibold mb-2">৩. ডাউনলোড করুন</h3>
+                        <p class="text-gray-500">আপনার নতুন স্বচ্ছ ব্যাকগ্রাউন্ড সহ হাই-রেজোলিউশন ছবিটি ডাউনলোড করুন।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">কার্যকারিতার প্রমাণ দেখুন</h2>
+                    <p class="text-gray-600 mt-2">স্লাইডারটি টেনে আমাদের AI-এর নিখুঁত কাজের পার্থক্য দেখুন।</p>
+                </div>
+                <div id="comparison-container" class="comparison-slider mx-auto max-w-4xl">
+                    <img src="https://placehold.co/1280x720/A6ADBA/FFFFFF?text=আসল+ছবি" alt="আসল ছবি" class="comparison-image">
+                    <div class="comparison-image-before">
+                        <img src="https://placehold.co/1280x720/4A90E2/FFFFFF?text=ব্যাকগ্রাউন্ড+সরানো" alt="ব্যাকগ্রাউন্ড সরানো ছবি" class="comparison-image">
+                    </div>
+                    <div id="slider-handle" class="slider-handle">
+                        <div class="slider-handle-button">&leftrightarrow;</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">কেন আমাদের টুল সেরা?</h2>
+                    <p class="text-gray-600 mt-2">আমরা আপনাকে সেরা ব্যাকগ্রাউন্ড রিমুভাল অভিজ্ঞতা দিতে প্রতিশ্রুতিবদ্ধ।</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-gray-50 p-8 rounded-lg feature-card">
+                        <h3 class="text-xl font-bold mb-3">⚡ অবিশ্বাস্য দ্রুত</h3>
+                        <p class="text-gray-600">ছবি আপলোড করার মাত্র ৫ সেকেন্ডের মধ্যে ফলাফল পান। সময় বাঁচান, উৎপাদনশীলতা বাড়ান।</p>
+                    </div>
+                    <div class="bg-gray-50 p-8 rounded-lg feature-card">
+                        <h3 class="text-xl font-bold mb-3">💎 স্টুডিও-কোয়ালিটি</h3>
+                        <p class="text-gray-600">চুল বা পশমের মতো জটিল অংশগুলোও নিখুঁতভাবে আলাদা করা হয়, যা আপনাকে পেশাদার ফলাফল দেয়।</p>
+                    </div>
+                    <div class="bg-gray-50 p-8 rounded-lg feature-card">
+                        <h3 class="text-xl font-bold mb-3">🆓 সম্পূর্ণ বিনামূল্যে</h3>
+                        <p class="text-gray-600">আমাদের টুলটি ব্যক্তিগত এবং বাণিজ্যিক ব্যবহারের জন্য সম্পূর্ণ বিনামূল্যে। কোনো লুকানো খরচ নেই।</p>
+                    </div>
+                    <div class="bg-gray-50 p-8 rounded-lg feature-card">
+                        <h3 class="text-xl font-bold mb-3">🔒 গোপনীয়তা সুরক্ষিত</h3>
+                        <p class="text-gray-600">আপনার আপলোড করা ছবিগুলো সম্পূর্ণ সুরক্ষিত থাকে এবং ২৪ ঘণ্টা পর আমাদের সার্ভার থেকে মুছে ফেলা হয়।</p>
+                    </div>
+                    <div class="bg-gray-50 p-8 rounded-lg feature-card">
+                        <h3 class="text-xl font-bold mb-3">🎨 নতুন ব্যাকগ্রাউন্ড যোগ করুন</h3>
+                        <p class="text-gray-600">স্বচ্ছ ব্যাকগ্রাউন্ডের পাশাপাশি আপনি ছবিতে একরঙা বা কাস্টম ব্যাকগ্রাউন্ড যোগ করতে পারবেন।</p>
+                    </div>
+                    <div class="bg-gray-50 p-8 rounded-lg feature-card">
+                        <h3 class="text-xl font-bold mb-3">🔌 প্লাগইন এবং API</h3>
+                        <p class="text-gray-600">আমাদের শক্তিশালী API ব্যবহার করে আপনার ওয়েবসাইট বা অ্যাপ্লিকেশনে ব্যাকগ্রাউন্ড রিমুভাল যুক্ত করুন।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="faq" class="py-20">
+            <div class="container mx-auto px-6 max-w-3xl">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">সাধারণ জিজ্ঞাসা (FAQ)</h2>
+                    <p class="text-gray-600 mt-2">আপনার মনে থাকা কিছু সাধারণ প্রশ্নের উত্তর এখানে দেওয়া হলো।</p>
+                </div>
+                <div class="space-y-4">
+                    <div class="bg-white rounded-lg shadow-sm">
+                        <button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none">
+                            <span>এই সার্ভিসটি কি সত্যিই বিনামূল্যে?</span>
+                            <span class="transform transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="faq-answer hidden p-5 pt-0 text-gray-600">
+                            হ্যাঁ, আমাদের বেসিক ব্যাকগ্রাউন্ড রিমুভাল সার্ভিসটি ব্যক্তিগত এবং বাণিজ্যিক উভয় ব্যবহারের জন্য সম্পূর্ণ বিনামূল্যে। আমরা ভবিষ্যতে কিছু প্রিমিয়াম ফিচার যোগ করতে পারি, কিন্তু মূল সার্ভিসটি সবসময় বিনামূল্যে থাকবে।
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm">
+                        <button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none">
+                            <span>আমি কোন ধরনের ছবি ব্যবহার করতে পারি?</span>
+                            <span class="transform transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="faq-answer hidden p-5 pt-0 text-gray-600">
+                            আপনি মানুষ, পণ্য, প্রাণী, গাড়ি, বা যেকোনো বস্তুর ছবি ব্যবহার করতে পারেন। আমাদের AI প্রযুক্তি বিভিন্ন ধরনের ছবির বিষয়বস্তু শনাক্ত করতে পারে। সেরা ফলাফলের জন্য, ছবিটি পরিষ্কার এবং ভালোভাবে আলোকিত হওয়া উচিত।
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm">
+                        <button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none">
+                            <span>আমার ছবির গোপনীয়তা কিভাবে রক্ষা করা হয়?</span>
+                            <span class="transform transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="faq-answer hidden p-5 pt-0 text-gray-600">
+                            আমরা আপনার গোপনীয়তাকে অত্যন্ত গুরুত্ব দিই। আপনার আপলোড করা সমস্ত ছবি এনক্রিপ্ট করা হয় এবং প্রক্রিয়াকরণের পরে স্বয়ংক্রিয়ভাবে আমাদের সার্ভার থেকে মুছে ফেলা হয়। আমরা আপনার ছবি কোনো তৃতীয় পক্ষের সাথে শেয়ার করি না।
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-blue-600 text-white text-center py-20">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">আপনার ডিজাইনকে নতুন মাত্রা দিন</h2>
+                <p class="text-blue-100 text-lg max-w-2xl mx-auto mb-8">
+                    এখনই শুরু করুন এবং সেকেন্ডের মধ্যে আপনার ছবির ব্যাকগ্রাউন্ড সরিয়ে ফেলুন। কোনো দক্ষতার প্রয়োজন নেই।
+                </p>
+                <button class="bg-white text-blue-600 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all duration-300">
+                    এখনই বিনামূল্যে শুরু করুন
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; ২০২৫ রিমুভবিজি। সর্বস্বত্ব সংরক্ষিত।</p>
+            <div class="flex justify-center space-x-6 mt-4">
+                <a href="#" class="text-gray-400 hover:text-white transition">গোপনীয়তা নীতি</a>
+                <a href="#" class="text-gray-400 hover:text-white transition">শর্তাবলী</a>
+                <a href="#" class="text-gray-400 hover:text-white transition">যোগাযোগ</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const answer = question.nextElementSibling;
+                    const arrow = question.querySelector('span:last-child');
+                    
+                    answer.classList.toggle('hidden');
+                    if (answer.classList.contains('hidden')) {
+                        arrow.style.transform = 'rotate(0deg)';
+                    } else {
+                        arrow.style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+
+            const comparisonContainer = document.getElementById('comparison-container');
+            if (comparisonContainer) {
+                const sliderHandle = document.getElementById('slider-handle');
+                const imageBefore = comparisonContainer.querySelector('.comparison-image-before');
+                let isDragging = false;
+
+                const startDragging = (e) => {
+                    isDragging = true;
+                    comparisonContainer.classList.add('is-dragging');
+                };
+
+                const stopDragging = () => {
+                    isDragging = false;
+                    comparisonContainer.classList.remove('is-dragging');
+                };
+
+                const onDrag = (e) => {
+                    if (!isDragging) return;
+                    
+                    const rect = comparisonContainer.getBoundingClientRect();
+                    let clientX = e.clientX || e.touches[0].clientX;
+                    let x = clientX - rect.left;
+                    
+                    if (x < 0) x = 0;
+                    if (x > rect.width) x = rect.width;
+
+                    let percentage = (x / rect.width) * 100;
+                    sliderHandle.style.left = percentage + '%';
+                    imageBefore.style.clipPath = `polygon(0 0, ${percentage}% 0, ${percentage}% 100%, 0 100%)`;
+                };
+
+                sliderHandle.addEventListener('mousedown', startDragging);
+                sliderHandle.addEventListener('touchstart', startDragging, { passive: true });
+
+                window.addEventListener('mouseup', stopDragging);
+                window.addEventListener('touchend', stopDragging);
+
+                window.addEventListener('mousemove', onDrag);
+                window.addEventListener('touchmove', onDrag, { passive: true });
+            }
+        });
+    </script>
+</body>
+</html>

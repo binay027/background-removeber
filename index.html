@@ -24,6 +24,31 @@
             border: 2px solid #e2e8f0; transition: all 0.2s ease-in-out;
         }
         .history-thumbnail:hover { border-color: #3498db; transform: scale(1.05); }
+
+        /* Star Animation CSS */
+        .sparkle-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none; /* Allows clicks to pass through to the image */
+            opacity: 0.7; /* Make sparkles subtle */
+        }
+        .sparkle {
+            position: absolute;
+            background-color: #FFD700; /* Gold color for sparkle */
+            border-radius: 50%;
+            opacity: 0;
+            animation: sparkle-animation 1.5s ease-out infinite;
+            box-shadow: 0 0 5px #FFD700, 0 0 10px #FFD700;
+        }
+        @keyframes sparkle-animation {
+            0% { transform: scale(0) rotate(0deg); opacity: 0; }
+            50% { transform: scale(1) rotate(180deg); opacity: 0.8; }
+            100% { transform: scale(0) rotate(360deg); opacity: 0; }
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -63,14 +88,13 @@
                     <div class="loader"></div>
                     <p class="text-gray-600 mt-4">ব্যাকগ্রাউন্ড সরানো হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</p>
                 </div>
-                <div id="result-display" class="hidden">
-                    <div class="max-w-xl mx-auto bg-white p-4 rounded-lg shadow-lg">
-                        <img id="result-image" src="" alt="ব্যাকগ্রাউন্ড সরানো ছবি" class="mx-auto rounded">
-                    </div>
-                    <a id="download-btn" href="#" download="background-removed-image.png" class="mt-6 inline-block bg-green-500 text-white px-8 py-3 rounded-full font-bold text-lg cta-button hover:bg-green-600">
-                        ডাউনলোড করুন
-                    </a>
+                <div id="result-display" class="hidden relative max-w-xl mx-auto bg-white p-4 rounded-lg shadow-lg">
+                    <img id="result-image" src="" alt="ব্যাকগ্রাউন্ড সরানো ছবি" class="mx-auto rounded">
+                    <!-- Sparkle container will be here --><div id="sparkle-overlay" class="sparkle-container"></div>
                 </div>
+                <a id="download-btn" href="#" download="background-removed-image.png" class="mt-6 inline-block bg-green-500 text-white px-8 py-3 rounded-full font-bold text-lg cta-button hover:bg-green-600">
+                    ডাউনলোড করুন
+                </a>
                 <div id="error-message" class="hidden text-red-500 mt-4 bg-red-100 p-4 rounded-lg"></div>
             </div>
         </section>
@@ -106,7 +130,8 @@
             const errorMessage = document.getElementById('error-message');
             const historySection = document.getElementById('history-section');
             const historyContainer = document.getElementById('history-container');
-            
+            const sparkleOverlay = document.getElementById('sparkle-overlay'); // Get the sparkle container
+
             const apiKey = 'MKyYqxAq4QEoPcGSYZPUKSMK'; 
             
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => dropZone.addEventListener(eventName, e => {e.preventDefault(); e.stopPropagation();}));
@@ -118,6 +143,30 @@
             function resetUIForNewUpload() {
                 resultSection.classList.remove('hidden'); loading.classList.remove('hidden'); resultDisplay.classList.add('hidden'); errorMessage.classList.add('hidden');
                 resultImage.src = ''; downloadBtn.href = '#'; window.scrollTo({ top: resultSection.offsetTop, behavior: 'smooth' });
+                stopSparkleAnimation(); // Ensure sparkles are stopped for new upload
+            }
+
+            function generateSparkles() {
+                // Clear existing sparkles first
+                sparkleOverlay.innerHTML = ''; 
+                for (let i = 0; i < 15; i++) { // Generate 15 sparkles
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'sparkle';
+                    // Random size between 8px and 20px
+                    const size = Math.random() * 12 + 8; 
+                    sparkle.style.width = `${size}px`;
+                    sparkle.style.height = `${size}px`;
+                    // Random position within the image container
+                    sparkle.style.left = `${Math.random() * 100}%`;
+                    sparkle.style.top = `${Math.random() * 100}%`;
+                    // Random delay for animation to make it twinkle
+                    sparkle.style.animationDelay = `${Math.random() * 1.5}s`; 
+                    sparkleOverlay.appendChild(sparkle);
+                }
+            }
+
+            function stopSparkleAnimation() {
+                 sparkleOverlay.innerHTML = ''; // Remove all sparkle elements
             }
 
             function handleFile(file) {
@@ -140,7 +189,7 @@
                 })
                 .then(blob => {
                     const reader = new FileReader();
-                    reader.onloadend = () => { const base64data = reader.result; displayResult(base64data); saveToHistory(base64data); renderHistory(); };
+                    reader.onloadend = () => { const base64data = reader.result; displayResult(base64data); saveToHistory(base64data); renderHistory(); generateSparkles(); }; // Generate sparkles after displaying result
                     reader.readAsDataURL(blob);
                 })
                 .catch(error => { showError(`ত্রুটি: ${error.message}`); })
@@ -158,7 +207,7 @@
                     historySection.classList.remove('hidden');
                     history.forEach(imageDataUrl => {
                         const img = document.createElement('img'); img.src = imageDataUrl; img.className = 'history-thumbnail'; img.alt = 'Saved work';
-                        img.addEventListener('click', () => { displayResult(imageDataUrl); window.scrollTo({ top: resultSection.offsetTop, behavior: 'smooth' }); });
+                        img.addEventListener('click', () => { displayResult(imageDataUrl); window.scrollTo({ top: resultSection.offsetTop, behavior: 'smooth' }); generateSparkles(); }); // Generate sparkles when clicking history
                         historyContainer.appendChild(img);
                     });
                 }

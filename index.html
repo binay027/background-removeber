@@ -124,7 +124,7 @@
             function showEditorView(isProcessing, initialImageSrc) {
                 uploadSection.classList.add('hidden');
                 editorSection.classList.remove('hidden');
-                infoSections.classList.add('hidden'); // THIS IS THE FIX
+                infoSections.classList.remove('hidden'); // THIS IS THE FIX
                 landingMenu.style.display = 'none';
                 headerActionBtn.textContent = 'নতুন ছবি';
                 headerActionBtn.onclick = showLandingView;

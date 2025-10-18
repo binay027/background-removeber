@@ -184,7 +184,6 @@
                     const arrow = question.querySelector('.faq-arrow');
                     const isOpening = answer.classList.contains('hidden');
                     
-                    // Close all other open answers
                     document.querySelectorAll('.faq-answer').forEach(ans => {
                         if (!ans.classList.contains('hidden') && ans !== answer) {
                             ans.classList.add('hidden');
@@ -192,7 +191,6 @@
                         }
                     });
 
-                    // Toggle current answer
                     answer.classList.toggle('hidden');
                     arrow.style.transform = isOpening ? 'rotate(180deg)' : 'rotate(0deg)';
                 });
@@ -209,8 +207,7 @@
             const errorMessage = document.getElementById('error-message');
             const historySection = document.getElementById('history-section');
             const historyContainer = document.getElementById('history-container');
-            const noHistoryMsg = document.getElementById('no-history-msg');
-
+            
             const apiKey = 'MKyYqxAq4QEoPcGSYZPUKSMK'; 
             
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => dropZone.addEventListener(eventName, preventDefaults, false));
@@ -236,6 +233,7 @@
             function handleFile(file) {
                 if (!file || !file.type.startsWith('image/')) {
                     showError('অনুগ্রহ করে একটি সঠিক ইমেজ ফাইল নির্বাচন করুন।');
+                    imageUpload.value = ''; // Reset input
                     return;
                 }
                 
@@ -275,6 +273,10 @@
                 })
                 .catch(error => {
                     showError(`ত্রুটি: ${error.message}`);
+                })
+                .finally(() => {
+                    // *** সমস্যার সমাধান: ইনপুট ফিল্ড রিসেট করা হচ্ছে ***
+                    imageUpload.value = '';
                 });
             }
 

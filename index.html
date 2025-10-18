@@ -123,38 +123,41 @@
 
             function showEditorView(isProcessing, initialImageSrc) {
                 uploadSection.classList.add('hidden');
-                infoSections.classList.add('hidden');
                 editorSection.classList.remove('hidden');
+                infoSections.classList.remove('hidden'); // THIS IS THE FIX
                 landingMenu.style.display = 'none';
                 headerActionBtn.textContent = 'নতুন ছবি';
                 headerActionBtn.onclick = showLandingView;
 
-                editorSection.innerHTML = `
+                let editorHTML = `
                     <div class="relative max-w-4xl mx-auto mb-6">
                         <img id="processing-image-preview" src="${initialImageSrc}" alt="প্রসেসিং প্রিভিউ" class="mx-auto rounded-lg max-h-[70vh] shadow-lg ${isProcessing ? '' : 'hidden'}">
                         <div id="processing-animation-overlay" class="processing-overlay ${isProcessing ? '' : 'hidden'} rounded-lg">
                             <div class="animated-star-container"></div>
                         </div>
-                        <div id="editor-ui" class="${isProcessing ? 'hidden' : ''} grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            <div class="lg:col-span-2 relative">
-                                <div id="canvas-wrapper" class="w-full h-[50vh] lg:h-[60vh] rounded-lg shadow-inner">
-                                    <canvas id="canvas"></canvas>
+                        <div id="editor-ui" class="${isProcessing ? 'hidden' : ''}">
+                           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                <div class="lg:col-span-2 relative">
+                                    <div id="canvas-wrapper" class="w-full h-[50vh] lg:h-[60vh] rounded-lg shadow-inner">
+                                        <canvas id="canvas"></canvas>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="lg:col-span-1">
-                                <div class="bg-white p-3 rounded-lg shadow-md mb-4 flex justify-start items-center gap-2 flex-wrap">
-                                    <button id="bg-tool-btn" class="tool-button active px-3 py-2 font-semibold text-sm text-gray-700 rounded-md flex items-center gap-2"><i class="fas fa-image"></i> ব্যাকগ্রাউন্ড</button>
-                                    <button id="shadow-tool-btn" class="tool-button px-3 py-2 font-semibold text-sm text-gray-700 rounded-md flex items-center gap-2"><i class="fas fa-moon"></i> শ্যাডো</button>
-                                    <button id="download-btn" class="ml-auto bg-blue-600 text-white px-4 py-2 rounded-lg font-bold cta-button text-sm hover:bg-blue-700 flex items-center gap-2"><i class="fas fa-download"></i> ডাউনলোড</button>
-                                </div>
-                                <div id="tool-panels">
-                                    <div id="background-panel" class="bg-white p-4 rounded-lg shadow-md"><h3 class="font-bold text-md mb-4">ব্যাকগ্রাউন্ড পরিবর্তন করুন</h3><div class="mb-4"><h4 class="font-semibold text-sm mb-2">রঙ</h4><div class="flex flex-wrap gap-3 items-center"><div class="color-palette-item selected w-8 h-8 rounded-full" data-bg="transparent" style="background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%); background-size: 10px 10px;"></div><div class="color-palette-item w-8 h-8 rounded-full" style="background-color: #FFFFFF;" data-bg="#FFFFFF"></div><div class="color-palette-item w-8 h-8 rounded-full" style="background-color: #000000;" data-bg="#000000"></div><button id="random-gradient-btn" class="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-yellow-500" title="Magic Background"></button><label for="color-picker" class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center cursor-pointer text-lg">+</label><input type="color" id="color-picker" class="invisible w-0 h-0"></div></div><div><h4 class="font-semibold text-sm mb-2">ছবি</h4><div class="flex flex-wrap gap-3 items-center"><img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&q=80&w=200&auto=format&fit=crop" class="bg-image-item h-16 w-24 object-cover rounded-md" data-bg-src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&q=80&w=1920&auto=format&fit=crop"><img src="https://images.unsplash.com/photo-1542281286-9e0a16bb7366?ixlib=rb-4.0.3&q=80&w=200&auto=format&fit=crop" class="bg-image-item h-16 w-24 object-cover rounded-md" data-bg-src="https://images.unsplash.com/photo-1542281286-9e0a16bb7366?ixlib=rb-4.0.3&q=80&w=1920&auto=format&fit=crop"><label for="background-upload" class="bg-image-item h-16 w-24 rounded-md border-2 border-dashed flex items-center justify-center cursor-pointer text-gray-400 hover:text-blue-500 hover:border-blue-500"><i class="fas fa-plus text-xl"></i></label><input type="file" id="background-upload" class="hidden" accept="image/*"></div></div></div>
-                                    <div id="shadow-panel" class="hidden bg-white p-4 rounded-lg shadow-md"><h3 class="font-bold text-md mb-4">ছায়া যোগ করুন</h3><div class="flex gap-4"><div class="shadow-option selected text-center" data-shadow="none"><i class="fas fa-ban text-xl mb-1"></i><p class="text-xs">None</p></div><div class="shadow-option text-center" data-shadow="drop-shadow(8px 12px 10px rgba(0,0,0,0.35))"><i class="fas fa-arrow-down text-xl mb-1"></i><p class="text-xs">Perspective</p></div></div></div>
+                                <div class="lg:col-span-1">
+                                    <div class="bg-white p-3 rounded-lg shadow-md mb-4 flex justify-start items-center gap-2 flex-wrap">
+                                        <button id="bg-tool-btn" class="tool-button active px-3 py-2 font-semibold text-sm text-gray-700 rounded-md flex items-center gap-2"><i class="fas fa-image"></i> ব্যাকগ্রাউন্ড</button>
+                                        <button id="shadow-tool-btn" class="tool-button px-3 py-2 font-semibold text-sm text-gray-700 rounded-md flex items-center gap-2"><i class="fas fa-moon"></i> শ্যাডো</button>
+                                        <button id="download-btn" class="ml-auto bg-blue-600 text-white px-4 py-2 rounded-lg font-bold cta-button text-sm hover:bg-blue-700 flex items-center gap-2"><i class="fas fa-download"></i> ডাউনলোড</button>
+                                    </div>
+                                    <div id="tool-panels">
+                                        <div id="background-panel" class="bg-white p-4 rounded-lg shadow-md"><h3 class="font-bold text-md mb-4">ব্যাকগ্রাউন্ড পরিবর্তন করুন</h3><div class="mb-4"><h4 class="font-semibold text-sm mb-2">রঙ</h4><div class="flex flex-wrap gap-3 items-center"><div class="color-palette-item selected w-8 h-8 rounded-full" data-bg="transparent" style="background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%); background-size: 10px 10px;"></div><div class="color-palette-item w-8 h-8 rounded-full" style="background-color: #FFFFFF;" data-bg="#FFFFFF"></div><div class="color-palette-item w-8 h-8 rounded-full" style="background-color: #000000;" data-bg="#000000"></div><button id="random-gradient-btn" class="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-yellow-500" title="Magic Background"></button><label for="color-picker" class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center cursor-pointer text-lg">+</label><input type="color" id="color-picker" class="invisible w-0 h-0"></div></div><div><h4 class="font-semibold text-sm mb-2">ছবি</h4><div class="flex flex-wrap gap-3 items-center"><img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&q=80&w=200&auto=format&fit=crop" class="bg-image-item h-16 w-24 object-cover rounded-md" data-bg-src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&q=80&w=1920&auto=format&fit=crop"><img src="https://images.unsplash.com/photo-1542281286-9e0a16bb7366?ixlib=rb-4.0.3&q=80&w=200&auto=format&fit=crop" class="bg-image-item h-16 w-24 object-cover rounded-md" data-bg-src="https://images.unsplash.com/photo-1542281286-9e0a16bb7366?ixlib=rb-4.0.3&q=80&w=1920&auto=format&fit=crop"><label for="background-upload" class="bg-image-item h-16 w-24 rounded-md border-2 border-dashed flex items-center justify-center cursor-pointer text-gray-400 hover:text-blue-500 hover:border-blue-500"><i class="fas fa-plus text-xl"></i></label><input type="file" id="background-upload" class="hidden" accept="image/*"></div></div></div>
+                                        <div id="shadow-panel" class="hidden bg-white p-4 rounded-lg shadow-md"><h3 class="font-bold text-md mb-4">ছায়া যোগ করুন</h3><div class="flex gap-4"><div class="shadow-option selected text-center" data-shadow="none"><i class="fas fa-ban text-xl mb-1"></i><p class="text-xs">None</p></div><div class="shadow-option text-center" data-shadow="drop-shadow(8px 12px 10px rgba(0,0,0,0.35))"><i class="fas fa-arrow-down text-xl mb-1"></i><p class="text-xs">Perspective</p></div></div></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
+                editorSection.innerHTML = editorHTML;
+                
                 if (!isProcessing) {
                     setupEditorEventListeners();
                     drawCanvas();
@@ -191,7 +194,6 @@
                             img.onload = () => {
                                 originalImage = img;
                                 saveToHistory(base64data);
-                                // Transition from processing to editor UI
                                 document.getElementById('processing-image-preview').classList.add('hidden');
                                 document.getElementById('processing-animation-overlay').classList.add('hidden');
                                 stopAnimatedStars();
@@ -226,7 +228,7 @@
                 const randomGradientBtn = document.getElementById('random-gradient-btn');
 
                 function drawCanvas() {
-                    if (!originalImage) return;
+                    if (!originalImage || !canvas) return;
                     const canvasWrapper = document.getElementById('canvas-wrapper');
                     const wrapperWidth = canvasWrapper.clientWidth; const wrapperHeight = canvasWrapper.clientHeight;
                     const imgAspectRatio = originalImage.width / originalImage.height; const wrapperAspectRatio = wrapperWidth / wrapperHeight;
@@ -331,7 +333,7 @@
                             const imageToEdit = new Image();
                             imageToEdit.onload = () => {
                                 originalImage = imageToEdit;
-                                showEditorView(false); // Show editor directly
+                                showEditorView(false, imageDataUrl);
                             };
                             imageToEdit.src = imageDataUrl;
                         });
@@ -340,7 +342,7 @@
                 }
             }
 
-            // --- Initial Setup for Static Parts ---
+            // --- Initial Setup ---
             const faqQuestions = document.querySelectorAll('.faq-question');
             faqQuestions.forEach(question => { question.addEventListener('click', () => { const answer = question.nextElementSibling; const arrow = question.querySelector('.faq-arrow'); const isOpening = answer.classList.contains('hidden'); document.querySelectorAll('.faq-answer').forEach(ans => { if (!ans.classList.contains('hidden') && ans !== answer) { ans.classList.add('hidden'); ans.previousElementSibling.querySelector('.faq-arrow').style.transform = 'rotate(0deg)'; } }); answer.classList.toggle('hidden'); arrow.style.transform = isOpening ? 'rotate(180deg)' : 'rotate(0deg)'; }); });
             showLandingView();

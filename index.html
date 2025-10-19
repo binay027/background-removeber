@@ -13,11 +13,10 @@
     <style>
         body { font-family: 'Hind Siliguri', sans-serif; background-color: #f0f2f5; color: #1c1e21; scroll-behavior: smooth; cursor: none; }
         .gradient-bg { background: linear-gradient(135deg, #E0F7FA 0%, #FFFFFF 100%); }
-        .cta-button, a, button, label[for] { transition: all 0.2s ease; cursor: none; }
+        .cta-button, a, button, label[for], input[type="file"], .color-palette-item, .bg-image-item, .shadow-option, .history-thumbnail { transition: all 0.2s ease; cursor: none; }
         .tool-button { transition: all 0.2s ease-in-out; border-bottom: 3px solid transparent; }
         .tool-button.active { color: #0d6efd; border-bottom-color: #0d6efd; }
         .tool-button:hover { background-color: #e4e6e9; }
-        .color-palette-item, .bg-image-item { cursor: none; transition: transform 0.2s ease; border: 2px solid transparent; }
         .color-palette-item:hover, .bg-image-item:hover { transform: scale(1.05); }
         .color-palette-item.selected, .bg-image-item.selected { border-color: #0d6efd; }
         #canvas-wrapper {
@@ -29,9 +28,8 @@
         .shadow-option { border: 1px solid #ccc; padding: 8px; border-radius: 6px; }
         .shadow-option.selected { border-color: #0d6efd; background-color: #e7f3ff; }
         .drag-over-style { border: 3px dashed #007BFF !important; background-color: #EBF8FF; }
-        .history-thumbnail { width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 2px solid #e2e8f0; transition: all 0.2s ease-in-out; }
-        .history-thumbnail:hover { border-color: #3498db; transform: scale(1.05); }
-
+        .history-thumbnail { width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 2px solid #e2e8f0; }
+        
         .processing-overlay {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background-color: rgba(0, 0, 0, 0.4); display: flex;
@@ -47,31 +45,15 @@
             100% { transform: scale(0.3) translateY(-100px) rotate(360deg); opacity: 0; }
         }
         
-        /* Background Particle Animation */
-        #particles-js {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: -1;
-        }
-        
-        /* Custom Cursor */
+        #particles-js { position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: -1; }
         .cursor {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #0d6efd;
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            transform: translate(-50%, -50%);
-            transition: width 0.2s, height 0.2s;
+            width: 25px; height: 25px; border: 3px solid #0d6efd;
+            border-radius: 50%; position: fixed; pointer-events: none;
+            z-index: 9999; transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.2s, border-width 0.2s;
         }
          .cursor-grow {
-            width: 40px;
-            height: 40px;
+            width: 50px; height: 50px; border-width: 2px;
             background-color: rgba(13, 110, 253, 0.2);
         }
     </style>
@@ -125,17 +107,18 @@
         document.addEventListener('DOMContentLoaded', function () {
             // --- Particle.js Background ---
             particlesJS("particles-js", {
-                "particles": { "number": { "value": 60, "density": { "enable": true, "value_area": 800 } }, "color": { "value": "#888888" }, "shape": { "type": "circle" }, "opacity": { "value": 0.4, "random": false }, "size": { "value": 3, "random": true }, "line_linked": { "enable": true, "distance": 150, "color": "#888888", "opacity": 0.3, "width": 1 }, "move": { "enable": true, "speed": 2, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false } },
-                "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true }, "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } }, "bubble": { "distance": 400, "size": 40, "duration": 2, "opacity": 8, "speed": 3 }, "repulse": { "distance": 200, "duration": 0.4 }, "push": { "particles_nb": 4 }, "remove": { "particles_nb": 2 } } },
+                "particles": { "number": { "value": 50, "density": { "enable": true, "value_area": 800 } }, "color": { "value": "#a0c4ff" }, "shape": { "type": "circle" }, "opacity": { "value": 0.5, "random": true }, "size": { "value": 3, "random": true }, "line_linked": { "enable": true, "distance": 150, "color": "#a0c4ff", "opacity": 0.2, "width": 1 }, "move": { "enable": true, "speed": 1, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false } },
+                "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": false }, "resize": true }, "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 0.5 } } } },
                 "retina_detect": true
             });
 
             // --- Custom Cursor ---
             const cursor = document.querySelector('.cursor');
             document.addEventListener('mousemove', e => {
-                cursor.setAttribute("style", "top: " + (e.pageY) + "px; left: " + (e.pageX) + "px;");
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
             });
-             document.querySelectorAll('a, button, label[for], .color-palette-item, .bg-image-item, .shadow-option, .history-thumbnail').forEach(el => {
+             document.querySelectorAll('a, button, label[for], input, .color-palette-item, .bg-image-item, .shadow-option, .history-thumbnail').forEach(el => {
                 el.addEventListener('mouseenter', () => cursor.classList.add('cursor-grow'));
                 el.addEventListener('mouseleave', () => cursor.classList.remove('cursor-grow'));
             });
@@ -165,7 +148,7 @@
             function showEditorView(isProcessing, initialImageSrc) {
                 uploadSection.classList.add('hidden');
                 editorSection.classList.remove('hidden');
-                infoSections.classList.add('hidden');
+                infoSections.classList.remove('hidden');
 
                 let editorHTML = `
                     <div class="relative max-w-4xl mx-auto mb-6 bg-white/80 backdrop-blur-sm p-4 rounded-xl">
@@ -191,10 +174,12 @@
                                 </div>
                             </div>
                         </div>
-                        <img id="processing-image-preview" src="${initialImageSrc}" alt="প্রসেসিং প্রিভিউ" class="absolute top-0 left-0 w-full h-full object-contain ${isProcessing ? '' : 'hidden'}">
-                        <div id="processing-animation-overlay" class="processing-overlay ${isProcessing ? '' : 'hidden'} rounded-lg">
-                            <div class="animated-star-container"></div>
-                        </div>
+                         <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center ${isProcessing ? '' : 'hidden'}">
+                             <img id="processing-image-preview" src="${initialImageSrc}" alt="প্রসেসিং প্রিভিউ" class="mx-auto rounded-lg max-h-[70vh] shadow-lg">
+                             <div id="processing-animation-overlay" class="processing-overlay rounded-lg">
+                                <div class="animated-star-container"></div>
+                             </div>
+                         </div>
                     </div>`;
                 editorSection.innerHTML = editorHTML;
                 

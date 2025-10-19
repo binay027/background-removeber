@@ -12,6 +12,7 @@
 
     <style>
         body { font-family: 'Hind Siliguri', sans-serif; background-color: #f0f2f5; color: #1c1e21; scroll-behavior: smooth; cursor: none; }
+        .gradient-bg { background: linear-gradient(135deg, #E0F7FA 0%, #FFFFFF 100%); }
         .cta-button, a, button, label[for], input[type="file"], .color-palette-item, .bg-image-item, .shadow-option, .history-thumbnail { transition: all 0.2s ease; cursor: none; }
         .tool-button { transition: all 0.2s ease-in-out; border-bottom: 3px solid transparent; }
         .tool-button.active { color: #0d6efd; border-bottom-color: #0d6efd; }
@@ -62,7 +63,7 @@
     <div id="particles-js"></div>
     <div class="cursor"></div>
 
-    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+    <header class="bg-white sticky top-0 z-50 shadow-md">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
             <div class="text-2xl font-bold text-blue-600"><span>প্রো<span class="text-gray-800">এডিটর</span></span></div>
             <div id="landing-menu" class="hidden md:flex space-x-6 items-center">
@@ -107,7 +108,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             // --- Particle.js Background ---
             particlesJS("particles-js", {
-                "particles": { "number": { "value": 160, "density": { "enable": true, "value_area": 800 } }, "color": { "value": "#a0c4ff" }, "shape": { "type": "circle" }, "opacity": { "value": 0.5, "random": true }, "size": { "value": 3, "random": true }, "line_linked": { "enable": true, "distance": 150, "color": "#a0c4ff", "opacity": 0.3, "width": 1 }, "move": { "enable": true, "speed": 1, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false } },
+                "particles": { "number": { "value": 160, "density": { "enable": true, "value_area": 800 } }, "color": { "value": "#cccccc" }, "shape": { "type": "circle" }, "opacity": { "value": 0.5, "random": true }, "size": { "value": 3, "random": true }, "line_linked": { "enable": true, "distance": 150, "color": "#cccccc", "opacity": 0.2, "width": 1 }, "move": { "enable": true, "speed": 1, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false } },
                 "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": false }, "resize": true }, "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 0.5 } } } },
                 "retina_detect": true
             });

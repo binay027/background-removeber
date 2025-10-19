@@ -11,13 +11,13 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 
     <style>
-        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f0f2f5; color: #1c1e21; scroll-behavior: smooth; }
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f0f2f5; color: #1c1e21; scroll-behavior: smooth; cursor: none; }
         .gradient-bg { background: linear-gradient(135deg, #E0F7FA 0%, #FFFFFF 100%); }
-        .cta-button { transition: all 0.2s ease; }
+        .cta-button, a, button, label[for] { transition: all 0.2s ease; cursor: none; }
         .tool-button { transition: all 0.2s ease-in-out; border-bottom: 3px solid transparent; }
         .tool-button.active { color: #0d6efd; border-bottom-color: #0d6efd; }
         .tool-button:hover { background-color: #e4e6e9; }
-        .color-palette-item, .bg-image-item { cursor: pointer; transition: transform 0.2s ease; border: 2px solid transparent; }
+        .color-palette-item, .bg-image-item { cursor: none; transition: transform 0.2s ease; border: 2px solid transparent; }
         .color-palette-item:hover, .bg-image-item:hover { transform: scale(1.05); }
         .color-palette-item.selected, .bg-image-item.selected { border-color: #0d6efd; }
         #canvas-wrapper {
@@ -26,10 +26,10 @@
             background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%);
             background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
         }
-        .shadow-option { cursor: pointer; border: 1px solid #ccc; padding: 8px; border-radius: 6px; }
+        .shadow-option { border: 1px solid #ccc; padding: 8px; border-radius: 6px; }
         .shadow-option.selected { border-color: #0d6efd; background-color: #e7f3ff; }
         .drag-over-style { border: 3px dashed #007BFF !important; background-color: #EBF8FF; }
-        .history-thumbnail { width: 100px; height: 100px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid #e2e8f0; transition: all 0.2s ease-in-out; }
+        .history-thumbnail { width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 2px solid #e2e8f0; transition: all 0.2s ease-in-out; }
         .history-thumbnail:hover { border-color: #3498db; transform: scale(1.05); }
 
         .processing-overlay {
@@ -46,11 +46,41 @@
             50% { transform: scale(1.5) translateY(-50px) rotate(180deg); opacity: 0.8; }
             100% { transform: scale(0.3) translateY(-100px) rotate(360deg); opacity: 0; }
         }
+        
+        /* Background Particle Animation */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #0d6efd;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s;
+        }
+         .cursor-grow {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(13, 110, 253, 0.2);
+        }
     </style>
 </head>
 <body class="antialiased">
+    <div id="particles-js"></div>
+    <div class="cursor"></div>
 
-    <header class="bg-white sticky top-0 z-50 shadow-md">
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
             <div class="text-2xl font-bold text-blue-600"><span>প্রো<span class="text-gray-800">এডিটর</span></span></div>
             <div id="landing-menu" class="hidden md:flex space-x-6 items-center">
@@ -63,13 +93,13 @@
         </nav>
     </header>
 
-    <main id="main-content" class="container mx-auto px-6 py-8">
+    <main id="main-content" class="container mx-auto px-6 py-8 relative z-10">
         
         <section id="upload-section">
-            <div id="drop-zone" class="gradient-bg pt-20 pb-24 text-center border-4 border-dashed border-transparent rounded-xl">
+            <div id="drop-zone" class="bg-white/80 backdrop-blur-sm pt-20 pb-24 text-center border-4 border-dashed border-transparent rounded-xl">
                 <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 leading-tight mb-4">ছবির ব্যাকগ্রাউন্ড সরান ও এডিট করুন</h1>
                 <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-8">এক ক্লিকে ব্যাকগ্রাউন্ড মুছে ফেলুন এবং আপনার মনের মতো করে নতুন রূপ দিন।</p>
-                <label for="image-upload" class="w-full sm:w-auto cursor-pointer bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg cta-button inline-block">
+                <label for="image-upload" class="w-full sm:w-auto bg-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg cta-button inline-block">
                     ছবি আপলোড করুন
                 </label>
                 <input type="file" id="image-upload" class="hidden" accept="image/*">
@@ -82,17 +112,35 @@
         </section>
 
         <div id="info-sections">
-            <section id="history-section" class="py-12 bg-gray-50 rounded-xl mt-8"><div class="container mx-auto px-6 text-center"><h2 class="text-3xl font-bold text-gray-800 mb-6">আপনার সাম্প্রতিক কাজ</h2><div id="history-container" class="flex gap-4 justify-center flex-wrap"></div></div></section>
+            <section id="history-section" class="py-12 bg-white/80 backdrop-blur-sm rounded-xl mt-8"><div class="container mx-auto px-6 text-center"><h2 class="text-3xl font-bold text-gray-800 mb-6">আপনার সাম্প্রতিক কাজ</h2><div id="history-container" class="flex gap-4 justify-center flex-wrap"></div></div></section>
             <section id="how-it-works" class="py-20 bg-white mt-8 rounded-xl"><div class="container mx-auto px-6"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">মাত্র ৩টি সহজ ধাপে কাজ করে</h2></div><div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center"><div class="p-6"><div class="flex items-center justify-center h-20 w-20 mx-auto bg-blue-100 text-blue-600 rounded-full text-4xl mb-4">📤</div><h3 class="text-xl font-semibold mb-2">১. ছবি আপলোড করুন</h3><p class="text-gray-500">আপনার কম্পিউটার বা ফোন থেকে যেকোনো ফরম্যাটের ছবি বেছে নিন।</p></div><div class="p-6"><div class="flex items-center justify-center h-20 w-20 mx-auto bg-green-100 text-green-600 rounded-full text-4xl mb-4">✨</div><h3 class="text-xl font-semibold mb-2">২. AI প্রসেসিং</h3><p class="text-gray-500">আমাদের স্মার্ট AI কয়েক সেকেন্ডের মধ্যে স্বয়ংক্রিয়ভাবে ব্যাকগ্রাউন্ড মুছে ফেলবে।</p></div><div class="p-6"><div class="flex items-center justify-center h-20 w-20 mx-auto bg-purple-100 text-purple-600 rounded-full text-4xl mb-4">📥</div><h3 class="text-xl font-semibold mb-2">৩. ডাউনলোড ও এডিট</h3><p class="text-gray-500">আপনার নতুন ছবি ডাউনলোড করুন অথবা আমাদের এডিটরে নতুন রূপ দিন।</p></div></div></div></section>
-            <section id="features" class="py-20 bg-gray-50 mt-8 rounded-xl"><div class="container mx-auto px-6"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">আমাদের শক্তিশালী ফিচারসমূহ</h2></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">শক্তিশালী এডিটর</h3><p class="text-gray-600">ব্যাকগ্রাউন্ড রিমুভ করার পর নতুন রঙ, ছবি বা শ্যাডো যোগ করে ছবিকে আকর্ষণীয় করে তুলুন।</p></div><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">উচ্চ-মানের আউটপুট</h3><p class="text-gray-600">কোনো মান না হারিয়ে হাই-রেজোলিউশনে স্বচ্ছ ব্যাকগ্রাউন্ডসহ ছবি ডাউনলোড করুন।</p></div><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">সময় সাশ্রয়ী</h3><p class="text-gray-600">ম্যানুয়াল এডিটিং-এর ঘণ্টার পর ঘণ্টার কাজ বাঁচিয়ে কয়েক সেকেন্ডে ফলাফল পান।</p></div></div></div></section>
+            <section id="features" class="py-20 bg-white/90 backdrop-blur-sm mt-8 rounded-xl"><div class="container mx-auto px-6"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">আমাদের শক্তিশালী ফিচারসমূহ</h2></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">শক্তিশালী এডিটর</h3><p class="text-gray-600">ব্যাকগ্রাউন্ড রিমুভ করার পর নতুন রঙ, ছবি বা শ্যাডো যোগ করে ছবিকে আকর্ষণীয় করে তুলুন।</p></div><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">উচ্চ-মানের আউটপুট</h3><p class="text-gray-600">কোনো মান না হারিয়ে হাই-রেজোলিউশনে স্বচ্ছ ব্যাকগ্রাউন্ডসহ ছবি ডাউনলোড করুন।</p></div><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">সময় সাশ্রয়ী</h3><p class="text-gray-600">ম্যানুয়াল এডিটিং-এর ঘণ্টার পর ঘণ্টার কাজ বাঁচিয়ে কয়েক সেকেন্ডে ফলাফল পান।</p></div></div></div></section>
             <section id="faq" class="py-20 bg-white mt-8 rounded-xl"><div class="container mx-auto px-6 max-w-3xl"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">সাধারণ জিজ্ঞাসা (FAQ)</h2></div><div class="space-y-4"><div class="bg-white rounded-lg shadow-sm"><button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none"><span>এই সার্ভিসটি কি সত্যিই বিনামূল্যে?</span><span class="faq-arrow transform transition-transform duration-300">▼</span></button><div class="faq-answer hidden p-5 pt-0 text-gray-600">হ্যাঁ, আমাদের বেসিক ব্যাকগ্রাউন্ড রিমুভাল সার্ভিসটি বিনামূল্যে। remove.bg API ব্যবহারের একটি মাসিক কোটা থাকে, যা সাধারণ ব্যবহারের জন্য যথেষ্ট।</div></div><div class="bg-white rounded-lg shadow-sm"><button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none"><span>আমি কোন ধরনের ছবি ব্যবহার করতে পারি?</span><span class="faq-arrow transform transition-transform duration-300">▼</span></button><div class="faq-answer hidden p-5 pt-0 text-gray-600">আপনি মানুষ, পণ্য, প্রাণী, গাড়ি, বা যেকোনো বস্তুর ছবি ব্যবহার করতে পারেন। সেরা ফলাফলের জন্য, ছবিটি পরিষ্কার এবং ভালোভাবে আলোকিত হওয়া উচিত।</div></div></div></div></section>
         </div>
     </main>
-    <footer class="bg-gray-800 text-white py-12 mt-8"><div class="container mx-auto px-6 text-center"><p>&copy; ২০২৫ প্রোএডিটর। সর্বস্বত্ব সংরক্ষিত।</p></div></footer>
-
+    <footer class="bg-gray-800 text-white py-12 mt-8 relative z-10"><div class="container mx-auto px-6 text-center"><p>&copy; ২০২৫ প্রোএডিটর। সর্বস্বত্ব সংরক্ষিত।</p></div></footer>
+    
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // --- DOM Element Declarations ---
+            // --- Particle.js Background ---
+            particlesJS("particles-js", {
+                "particles": { "number": { "value": 60, "density": { "enable": true, "value_area": 800 } }, "color": { "value": "#888888" }, "shape": { "type": "circle" }, "opacity": { "value": 0.4, "random": false }, "size": { "value": 3, "random": true }, "line_linked": { "enable": true, "distance": 150, "color": "#888888", "opacity": 0.3, "width": 1 }, "move": { "enable": true, "speed": 2, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false } },
+                "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true }, "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } }, "bubble": { "distance": 400, "size": 40, "duration": 2, "opacity": 8, "speed": 3 }, "repulse": { "distance": 200, "duration": 0.4 }, "push": { "particles_nb": 4 }, "remove": { "particles_nb": 2 } } },
+                "retina_detect": true
+            });
+
+            // --- Custom Cursor ---
+            const cursor = document.querySelector('.cursor');
+            document.addEventListener('mousemove', e => {
+                cursor.setAttribute("style", "top: " + (e.pageY) + "px; left: " + (e.pageX) + "px;");
+            });
+             document.querySelectorAll('a, button, label[for], .color-palette-item, .bg-image-item, .shadow-option, .history-thumbnail').forEach(el => {
+                el.addEventListener('mouseenter', () => cursor.classList.add('cursor-grow'));
+                el.addEventListener('mouseleave', () => cursor.classList.remove('cursor-grow'));
+            });
+
+            // --- App Logic ---
             const uploadSection = document.getElementById('upload-section');
             const editorSection = document.getElementById('editor-section');
             const infoSections = document.getElementById('info-sections');
@@ -100,14 +148,12 @@
             const imageUpload = document.getElementById('image-upload');
             const historyContainer = document.getElementById('history-container');
             
-            // --- Global State ---
             let originalImage = null;
             let backgroundImage = null;
             let backgroundColor = 'transparent';
             let currentShadow = 'none';
             const apiKey = 'MKyYqxAq4QEoPcGSYZPUKSMK';
 
-            // --- UI View Management ---
             function showLandingView() {
                 editorSection.classList.add('hidden');
                 uploadSection.classList.remove('hidden');
@@ -119,14 +165,10 @@
             function showEditorView(isProcessing, initialImageSrc) {
                 uploadSection.classList.add('hidden');
                 editorSection.classList.remove('hidden');
-                infoSections.classList.remove('hidden'); // THIS IS THE FIX
+                infoSections.classList.add('hidden');
 
                 let editorHTML = `
-                    <div class="relative max-w-4xl mx-auto mb-6">
-                        <img id="processing-image-preview" src="${initialImageSrc}" alt="প্রসেসিং প্রিভিউ" class="mx-auto rounded-lg max-h-[70vh] shadow-lg ${isProcessing ? '' : 'hidden'}">
-                        <div id="processing-animation-overlay" class="processing-overlay ${isProcessing ? '' : 'hidden'} rounded-lg">
-                            <div class="animated-star-container"></div>
-                        </div>
+                    <div class="relative max-w-4xl mx-auto mb-6 bg-white/80 backdrop-blur-sm p-4 rounded-xl">
                         <div id="editor-ui" class="${isProcessing ? 'hidden' : ''}">
                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                 <div class="lg:col-span-2 relative">
@@ -139,15 +181,19 @@
                                         <button id="bg-tool-btn" class="tool-button active px-3 py-2 font-semibold text-sm text-gray-700 rounded-md flex items-center gap-2"><i class="fas fa-image"></i> ব্যাকগ্রাউন্ড</button>
                                         <button id="shadow-tool-btn" class="tool-button px-3 py-2 font-semibold text-sm text-gray-700 rounded-md flex items-center gap-2"><i class="fas fa-moon"></i> শ্যাডো</button>
                                         <div class="flex-grow"></div>
-                                        <button id="upload-new-btn-editor" class="text-blue-600 font-semibold text-sm p-2 rounded-md hover:bg-gray-100 flex items-center gap-1"><i class="fas fa-plus-circle"></i> নতুন ছবি</button>
+                                        <button id="upload-new-btn-editor" class="text-blue-600 font-semibold text-sm p-2 rounded-md hover:bg-gray-100 flex items-center gap-1"><i class="fas fa-plus-circle"></i> নতুন</button>
                                         <button id="download-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold cta-button text-sm hover:bg-blue-700 flex items-center gap-2"><i class="fas fa-download"></i> ডাউনলোড</button>
                                     </div>
                                     <div id="tool-panels">
-                                        <div id="background-panel" class="bg-white p-4 rounded-lg shadow-md"><h3 class="font-bold text-md mb-4">ব্যাকগ্রাউন্ড পরিবর্তন করুন</h3><div class="mb-4"><h4 class="font-semibold text-sm mb-2">রঙ</h4><div class="flex flex-wrap gap-3 items-center"><div class="color-palette-item selected w-8 h-8 rounded-full" data-bg="transparent" style="background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%); background-size: 10px 10px;"></div><div class="color-palette-item w-8 h-8 rounded-full" style="background-color: #FFFFFF;" data-bg="#FFFFFF"></div><div class="color-palette-item w-8 h-8 rounded-full" style="background-color: #000000;" data-bg="#000000"></div><button id="random-gradient-btn" class="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-yellow-500" title="Magic Background"></button><label for="color-picker" class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center cursor-pointer text-lg">+</label><input type="color" id="color-picker" class="invisible w-0 h-0"></div></div><div><h4 class="font-semibold text-sm mb-2">ছবি</h4><div class="flex flex-wrap gap-3 items-center"><img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&q=80&w=200&auto=format&fit=crop" class="bg-image-item h-16 w-24 object-cover rounded-md" data-bg-src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&q=80&w=1920&auto=format&fit=crop"><img src="https://images.unsplash.com/photo-1542281286-9e0a16bb7366?ixlib=rb-4.0.3&q=80&w=200&auto=format&fit=crop" class="bg-image-item h-16 w-24 object-cover rounded-md" data-bg-src="https://images.unsplash.com/photo-1542281286-9e0a-16bb7366?ixlib=rb-4.0.3&q=80&w=1920&auto=format&fit=crop"><label for="background-upload" class="bg-image-item h-16 w-24 rounded-md border-2 border-dashed flex items-center justify-center cursor-pointer text-gray-400 hover:text-blue-500 hover:border-blue-500"><i class="fas fa-plus text-xl"></i></label><input type="file" id="background-upload" class="hidden" accept="image/*"></div></div></div>
+                                        <div id="background-panel" class="bg-white p-4 rounded-lg shadow-md"><h3 class="font-bold text-md mb-4">ব্যাকগ্রাউন্ড পরিবর্তন করুন</h3><div class="mb-4"><h4 class="font-semibold text-sm mb-2">রঙ</h4><div class="flex flex-wrap gap-3 items-center"><div class="color-palette-item selected w-8 h-8 rounded-full" data-bg="transparent" style="background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%); background-size: 10px 10px;"></div><div class="color-palette-item w-8 h-8 rounded-full" style="background-color: #FFFFFF;" data-bg="#FFFFFF"></div><div class="color-palette-item w-8 h-8 rounded-full" style="background-color: #000000;" data-bg="#000000"></div><button id="random-gradient-btn" class="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-yellow-500" title="Magic Background"></button><label for="color-picker" class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center text-lg">+</label><input type="color" id="color-picker" class="invisible w-0 h-0"></div></div><div><h4 class="font-semibold text-sm mb-2">ছবি</h4><div class="flex flex-wrap gap-3 items-center"><img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&q=80&w=200&auto=format&fit=crop" class="bg-image-item h-16 w-24 object-cover rounded-md" data-bg-src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&q=80&w=1920&auto=format&fit=crop"><img src="https://images.unsplash.com/photo-1542281286-9e0a16bb7366?ixlib=rb-4.0.3&q=80&w=200&auto=format&fit=crop" class="bg-image-item h-16 w-24 object-cover rounded-md" data-bg-src="https://images.unsplash.com/photo-1542281286-9e0a16bb7366?ixlib=rb-4.0.3&q=80&w=1920&auto=format&fit=crop"><label for="background-upload" class="bg-image-item h-16 w-24 rounded-md border-2 border-dashed flex items-center justify-center text-gray-400 hover:text-blue-500 hover:border-blue-500"><i class="fas fa-plus text-xl"></i></label><input type="file" id="background-upload" class="hidden" accept="image/*"></div></div></div>
                                         <div id="shadow-panel" class="hidden bg-white p-4 rounded-lg shadow-md"><h3 class="font-bold text-md mb-4">ছায়া যোগ করুন</h3><div class="flex gap-4"><div class="shadow-option selected text-center" data-shadow="none"><i class="fas fa-ban text-xl mb-1"></i><p class="text-xs">None</p></div><div class="shadow-option text-center" data-shadow="drop-shadow(8px 12px 10px rgba(0,0,0,0.35))"><i class="fas fa-arrow-down text-xl mb-1"></i><p class="text-xs">Perspective</p></div></div></div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <img id="processing-image-preview" src="${initialImageSrc}" alt="প্রসেসিং প্রিভিউ" class="absolute top-0 left-0 w-full h-full object-contain ${isProcessing ? '' : 'hidden'}">
+                        <div id="processing-animation-overlay" class="processing-overlay ${isProcessing ? '' : 'hidden'} rounded-lg">
+                            <div class="animated-star-container"></div>
                         </div>
                     </div>`;
                 editorSection.innerHTML = editorHTML;
@@ -160,7 +206,6 @@
                 }
             }
             
-            // --- File Handling ---
             function handleFile(file) {
                 if (!file || !file.type.startsWith('image/')) { alert('অনুগ্রহ করে একটি সঠিক ইমেজ ফাইল নির্বাচন করুন।'); return; }
 
@@ -210,7 +255,6 @@
             dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); e.stopPropagation(); dropZone.classList.remove('drag-over-style'); });
             dropZone.addEventListener('drop', (e) => { e.preventDefault(); e.stopPropagation(); dropZone.classList.remove('drag-over-style'); handleFile(e.dataTransfer.files[0]); });
 
-            // --- Editor Setup ---
             function setupEditorEventListeners() {
                 const canvas = document.getElementById('canvas');
                 if(!canvas) return;
@@ -294,7 +338,6 @@
                 setTimeout(drawCanvas, 0); 
             }
             
-            // --- Animation Logic ---
             const starColors = ['#FFFFFF', '#FFD700', '#FFA07A', '#87CEEB', '#98FB98', '#FF69B4'];
             function generateAnimatedStars() {
                 const animatedStarContainer = document.querySelector('#processing-animation-overlay .animated-star-container');
@@ -316,7 +359,6 @@
                 if(animatedStarContainer) animatedStarContainer.innerHTML = ''; 
             }
 
-            // --- History Logic ---
             function getHistory() { try { const history = localStorage.getItem('bgRemovalHistory'); return history ? JSON.parse(history) : []; } catch (e) { return []; } }
             function saveToHistory(base64data) { let history = getHistory(); history.unshift(base64data); if (history.length > 5) history = history.slice(0, 5); try { localStorage.setItem('bgRemovalHistory', JSON.stringify(history)); } catch (e) { console.error("Failed to save history:", e); } }
             function renderHistory() {
@@ -338,7 +380,6 @@
                 }
             }
 
-            // --- Initial Setup for Static Parts ---
             const faqQuestions = document.querySelectorAll('.faq-question');
             faqQuestions.forEach(question => { question.addEventListener('click', () => { const answer = question.nextElementSibling; const arrow = question.querySelector('.faq-arrow'); const isOpening = answer.classList.contains('hidden'); document.querySelectorAll('.faq-answer').forEach(ans => { if (!ans.classList.contains('hidden') && ans !== answer) { ans.classList.add('hidden'); ans.previousElementSibling.querySelector('.faq-arrow').style.transform = 'rotate(0deg)'; } }); answer.classList.toggle('hidden'); arrow.style.transform = isOpening ? 'rotate(180deg)' : 'rotate(0deg)'; }); });
             showLandingView();

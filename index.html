@@ -12,7 +12,6 @@
 
     <style>
         body { font-family: 'Hind Siliguri', sans-serif; background-color: #f0f2f5; color: #1c1e21; scroll-behavior: smooth; cursor: none; }
-        .gradient-bg { background: linear-gradient(135deg, #E0F7FA 0%, #FFFFFF 100%); }
         .cta-button, a, button, label[for], input[type="file"], .color-palette-item, .bg-image-item, .shadow-option, .history-thumbnail { transition: all 0.2s ease; cursor: none; }
         .tool-button { transition: all 0.2s ease-in-out; border-bottom: 3px solid transparent; }
         .tool-button.active { color: #0d6efd; border-bottom-color: #0d6efd; }
@@ -50,8 +49,7 @@
             width: 25px; height: 25px; border: 3px solid #0d6efd;
             border-radius: 50%; position: fixed; pointer-events: none;
             z-index: 9999; transform: translate(-50%, -50%);
-            transition: width 0.2s, height 0.2s, background-color 0.2s, border-width 0.2s, top 0.1s, left 0.1s;
-            transition-timing-function: ease-out;
+            transition: width 0.2s, height 0.2s, background-color 0.2s, border-width 0.2s, top 0.1s ease-out, left 0.1s ease-out;
         }
          .cursor-grow {
             width: 50px; height: 50px; border-width: 2px;
@@ -63,7 +61,7 @@
     <div id="particles-js"></div>
     <div class="cursor"></div>
 
-    <header class="bg-white sticky top-0 z-50 shadow-md">
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
             <div class="text-2xl font-bold text-blue-600"><span>প্রো<span class="text-gray-800">এডিটর</span></span></div>
             <div id="landing-menu" class="hidden md:flex space-x-6 items-center">
@@ -149,7 +147,7 @@
             function showEditorView(isProcessing, initialImageSrc) {
                 uploadSection.classList.add('hidden');
                 editorSection.classList.remove('hidden');
-                infoSections.classList.add('hidden');
+                infoSections.classList.remove('hidden');
 
                 let editorHTML = `
                     <div class="relative max-w-4xl mx-auto mb-6 bg-white/80 backdrop-blur-sm p-4 rounded-xl">

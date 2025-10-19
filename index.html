@@ -99,8 +99,6 @@
             const dropZone = document.getElementById('drop-zone');
             const imageUpload = document.getElementById('image-upload');
             const historyContainer = document.getElementById('history-container');
-            const headerActionBtn = document.getElementById('header-action-btn');
-            const landingMenu = document.getElementById('landing-menu');
             
             // --- Global State ---
             let originalImage = null;
@@ -114,9 +112,6 @@
                 editorSection.classList.add('hidden');
                 uploadSection.classList.remove('hidden');
                 infoSections.classList.remove('hidden');
-                landingMenu.style.display = 'flex';
-                headerActionBtn.textContent = 'লগইন করুন';
-                headerActionBtn.onclick = null;
                 renderHistory();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
@@ -124,10 +119,7 @@
             function showEditorView(isProcessing, initialImageSrc) {
                 uploadSection.classList.add('hidden');
                 editorSection.classList.remove('hidden');
-                infoSections.classList.add('hidden'); 
-                landingMenu.style.display = 'none';
-                headerActionBtn.textContent = 'নতুন ছবি';
-                headerActionBtn.onclick = showLandingView;
+                infoSections.classList.add('hidden'); // THIS IS THE FIX
 
                 let editorHTML = `
                     <div class="relative max-w-4xl mx-auto mb-6">
@@ -146,7 +138,9 @@
                                     <div class="bg-white p-3 rounded-lg shadow-md mb-4 flex justify-start items-center gap-2 flex-wrap">
                                         <button id="bg-tool-btn" class="tool-button active px-3 py-2 font-semibold text-sm text-gray-700 rounded-md flex items-center gap-2"><i class="fas fa-image"></i> ব্যাকগ্রাউন্ড</button>
                                         <button id="shadow-tool-btn" class="tool-button px-3 py-2 font-semibold text-sm text-gray-700 rounded-md flex items-center gap-2"><i class="fas fa-moon"></i> শ্যাডো</button>
-                                        <button id="download-btn" class="ml-auto bg-blue-600 text-white px-4 py-2 rounded-lg font-bold cta-button text-sm hover:bg-blue-700 flex items-center gap-2"><i class="fas fa-download"></i> ডাউনলোড</button>
+                                        <div class="flex-grow"></div>
+                                        <button id="upload-new-btn-editor" class="text-blue-600 font-semibold text-sm p-2 rounded-md hover:bg-gray-100 flex items-center gap-1"><i class="fas fa-plus-circle"></i> নতুন ছবি</button>
+                                        <button id="download-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold cta-button text-sm hover:bg-blue-700 flex items-center gap-2"><i class="fas fa-download"></i> ডাউনলোড</button>
                                     </div>
                                     <div id="tool-panels">
                                         <div id="background-panel" class="bg-white p-4 rounded-lg shadow-md"><h3 class="font-bold text-md mb-4">ব্যাকগ্রাউন্ড পরিবর্তন করুন</h3><div class="mb-4"><h4 class="font-semibold text-sm mb-2">রঙ</h4><div class="flex flex-wrap gap-3 items-center"><div class="color-palette-item selected w-8 h-8 rounded-full" data-bg="transparent" style="background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%); background-size: 10px 10px;"></div><div class="color-palette-item w-8 h-8 rounded-full" style="background-color: #FFFFFF;" data-bg="#FFFFFF"></div><div class="color-palette-item w-8 h-8 rounded-full" style="background-color: #000000;" data-bg="#000000"></div><button id="random-gradient-btn" class="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-yellow-500" title="Magic Background"></button><label for="color-picker" class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center cursor-pointer text-lg">+</label><input type="color" id="color-picker" class="invisible w-0 h-0"></div></div><div><h4 class="font-semibold text-sm mb-2">ছবি</h4><div class="flex flex-wrap gap-3 items-center"><img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&q=80&w=200&auto=format&fit=crop" class="bg-image-item h-16 w-24 object-cover rounded-md" data-bg-src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&q=80&w=1920&auto=format&fit=crop"><img src="https://images.unsplash.com/photo-1542281286-9e0a16bb7366?ixlib=rb-4.0.3&q=80&w=200&auto=format&fit=crop" class="bg-image-item h-16 w-24 object-cover rounded-md" data-bg-src="https://images.unsplash.com/photo-1542281286-9e0a16bb7366?ixlib=rb-4.0.3&q=80&w=1920&auto=format&fit=crop"><label for="background-upload" class="bg-image-item h-16 w-24 rounded-md border-2 border-dashed flex items-center justify-center cursor-pointer text-gray-400 hover:text-blue-500 hover:border-blue-500"><i class="fas fa-plus text-xl"></i></label><input type="file" id="background-upload" class="hidden" accept="image/*"></div></div></div>
@@ -158,6 +152,8 @@
                     </div>`;
                 editorSection.innerHTML = editorHTML;
                 
+                document.getElementById('upload-new-btn-editor').onclick = showLandingView;
+
                 if (!isProcessing) {
                     setupEditorEventListeners();
                     drawCanvas();

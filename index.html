@@ -117,13 +117,13 @@
                 cursor.style.left = e.clientX + 'px';
                 cursor.style.top = e.clientY + 'px';
             });
-            function setupCursorEvents() {
+            function setupGlobalCursorEvents() {
                  document.querySelectorAll('a, button, label[for], input, .color-palette-item, .bg-image-item, .shadow-option, .history-thumbnail').forEach(el => {
                     el.addEventListener('mouseenter', () => cursor.classList.add('cursor-grow'));
                     el.addEventListener('mouseleave', () => cursor.classList.remove('cursor-grow'));
                 });
             }
-            setupCursorEvents();
+            setupGlobalCursorEvents();
 
             // --- App Logic ---
             const uploadSection = document.getElementById('upload-section');
@@ -137,7 +137,7 @@
             let backgroundImage = null;
             let backgroundColor = 'transparent';
             let currentShadow = 'none';
-            const apiKey = 'ZYnvkg3EyotnasNxnykQX9rz';
+            const apiKey = 'fwesaVDs3mupZNKGyPd4zNoM';
 
             function showLandingView() {
                 editorSection.classList.add('hidden');
@@ -186,11 +186,12 @@
                 editorSection.innerHTML = editorHTML;
                 
                 document.getElementById('upload-new-btn-editor').onclick = showLandingView;
-                setupCursorEvents();
 
                 if (!isProcessing) {
                     setupEditorEventListeners();
                     drawCanvas();
+                } else {
+                    setupGlobalCursorEvents(); // Re-attach cursor events for processing view
                 }
             }
             
@@ -324,7 +325,7 @@
                 downloadBtn.addEventListener('click', () => { const link = document.createElement('a'); link.download = 'edited-image.png'; link.href = document.getElementById('canvas').toDataURL('image/png'); link.click(); });
                 window.addEventListener('resize', drawCanvas);
                 setTimeout(drawCanvas, 0); 
-                setupCursorEvents(); // Re-attach cursor events for new elements
+                setupGlobalCursorEvents();
             }
             
             const starColors = ['#FFFFFF', '#FFD700', '#FFA07A', '#87CEEB', '#98FB98', '#FF69B4'];
@@ -367,6 +368,7 @@
                         historyContainer.appendChild(img);
                     });
                 }
+                setupGlobalCursorEvents();
             }
 
             const faqQuestions = document.querySelectorAll('.faq-question');

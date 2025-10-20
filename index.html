@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@imgly/background-removal/dist/browser.js"></script>
 
     <style>
         body { font-family: 'Hind Siliguri', sans-serif; background-color: #f0f2f5; color: #1c1e21; scroll-behavior: smooth; cursor: none; }
@@ -61,7 +62,7 @@
     <div id="particles-js"></div>
     <div class="cursor"></div>
 
-    <header class="bg-white sticky top-0 z-50 shadow-md">
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
             <div class="text-2xl font-bold text-blue-600"><span>প্রো<span class="text-gray-800">এডিটর</span></span></div>
             <div id="landing-menu" class="hidden md:flex space-x-6 items-center">
@@ -84,7 +85,7 @@
                     ছবি আপলোড করুন
                 </label>
                 <input type="file" id="image-upload" class="hidden" accept="image/*">
-                <p class="text-gray-500 text-sm mt-4">অথবা একটি ফাইল এখানে টেনে আনুন</p>
+                <p id="model-status" class="text-sm font-semibold mt-4 text-blue-700"></p>
             </div>
         </section>
 
@@ -96,13 +97,15 @@
             <section id="history-section" class="py-12 bg-white/80 backdrop-blur-sm rounded-xl mt-8"><div class="container mx-auto px-6 text-center"><h2 class="text-3xl font-bold text-gray-800 mb-6">আপনার সাম্প্রতিক কাজ</h2><div id="history-container" class="flex gap-4 justify-center flex-wrap"></div></div></section>
             <section id="how-it-works" class="py-20 bg-white mt-8 rounded-xl"><div class="container mx-auto px-6"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">মাত্র ৩টি সহজ ধাপে কাজ করে</h2></div><div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center"><div class="p-6"><div class="flex items-center justify-center h-20 w-20 mx-auto bg-blue-100 text-blue-600 rounded-full text-4xl mb-4">📤</div><h3 class="text-xl font-semibold mb-2">১. ছবি আপলোড করুন</h3><p class="text-gray-500">আপনার কম্পিউটার বা ফোন থেকে যেকোনো ফরম্যাটের ছবি বেছে নিন।</p></div><div class="p-6"><div class="flex items-center justify-center h-20 w-20 mx-auto bg-green-100 text-green-600 rounded-full text-4xl mb-4">✨</div><h3 class="text-xl font-semibold mb-2">২. AI প্রসেসিং</h3><p class="text-gray-500">আমাদের স্মার্ট AI কয়েক সেকেন্ডের মধ্যে স্বয়ংক্রিয়ভাবে ব্যাকগ্রাউন্ড মুছে ফেলবে।</p></div><div class="p-6"><div class="flex items-center justify-center h-20 w-20 mx-auto bg-purple-100 text-purple-600 rounded-full text-4xl mb-4">📥</div><h3 class="text-xl font-semibold mb-2">৩. ডাউনলোড ও এডিট</h3><p class="text-gray-500">আপনার নতুন ছবি ডাউনলোড করুন অথবা আমাদের এডিটরে নতুন রূপ দিন।</p></div></div></div></section>
             <section id="features" class="py-20 bg-white/90 backdrop-blur-sm mt-8 rounded-xl"><div class="container mx-auto px-6"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">আমাদের শক্তিশালী ফিচারসমূহ</h2></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">শক্তিশালী এডিটর</h3><p class="text-gray-600">ব্যাকগ্রাউন্ড রিমুভ করার পর নতুন রঙ, ছবি বা শ্যাডো যোগ করে ছবিকে আকর্ষণীয় করে তুলুন।</p></div><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">উচ্চ-মানের আউটপুট</h3><p class="text-gray-600">কোনো মান না হারিয়ে হাই-রেজোলিউশনে স্বচ্ছ ব্যাকগ্রাউন্ডসহ ছবি ডাউনলোড করুন।</p></div><div class="bg-white p-6 rounded-lg shadow-md feature-card"><h3 class="text-xl font-semibold mb-2">সময় সাশ্রয়ী</h3><p class="text-gray-600">ম্যানুয়াল এডিটিং-এর ঘণ্টার পর ঘণ্টার কাজ বাঁচিয়ে কয়েক সেকেন্ডে ফলাফল পান।</p></div></div></div></section>
-            <section id="faq" class="py-20 bg-white mt-8 rounded-xl"><div class="container mx-auto px-6 max-w-3xl"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">সাধারণ জিজ্ঞাসা (FAQ)</h2></div><div class="space-y-4"><div class="bg-white rounded-lg shadow-sm"><button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none"><span>এই সার্ভিসটি কি সত্যিই বিনামূল্যে?</span><span class="faq-arrow transform transition-transform duration-300">▼</span></button><div class="faq-answer hidden p-5 pt-0 text-gray-600">হ্যাঁ, আমাদের বেসিক ব্যাকগ্রাউন্ড রিমুভাল সার্ভিসটি বিনামূল্যে। remove.bg API ব্যবহারের একটি মাসিক কোটা থাকে, যা সাধারণ ব্যবহারের জন্য যথেষ্ট।</div></div><div class="bg-white rounded-lg shadow-sm"><button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none"><span>আমি কোন ধরনের ছবি ব্যবহার করতে পারি?</span><span class="faq-arrow transform transition-transform duration-300">▼</span></button><div class="faq-answer hidden p-5 pt-0 text-gray-600">আপনি মানুষ, পণ্য, প্রাণী, গাড়ি, বা যেকোনো বস্তুর ছবি ব্যবহার করতে পারেন। সেরা ফলাফলের জন্য, ছবিটি পরিষ্কার এবং ভালোভাবে আলোকিত হওয়া উচিত।</div></div></div></div></section>
+            <section id="faq" class="py-20 bg-white mt-8 rounded-xl"><div class="container mx-auto px-6 max-w-3xl"><div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">সাধারণ জিজ্ঞাসা (FAQ)</h2></div><div class="space-y-4"><div class="bg-white rounded-lg shadow-sm"><button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none"><span>এই সার্ভিসটি কি সত্যিই বিনামূল্যে?</span><span class="faq-arrow transform transition-transform duration-300">▼</span></button><div class="faq-answer hidden p-5 pt-0 text-gray-600">হ্যাঁ, এই টুলটি সম্পূর্ণ বিনামূল্যে ব্যবহার করা যায়। কারণ এটি আপনার ব্রাউজারেই চলে এবং কোনো সার্ভার খরচ নেই।</div></div><div class="bg-white rounded-lg shadow-sm"><button class="faq-question w-full flex justify-between items-center text-left p-5 font-semibold text-lg focus:outline-none"><span>আমার ছবি কি নিরাপদ?</span><span class="faq-arrow transform transition-transform duration-300">▼</span></button><div class="faq-answer hidden p-5 pt-0 text-gray-600">আপনার ছবি ১০০% নিরাপদ। ছবিটি আপনার কম্পিউটারেই প্রসেস হয় এবং কখনোই আমাদের বা অন্য কোনো সার্ভারে আপলোড হয় না।</div></div></div></div></section>
         </div>
     </main>
     <footer class="bg-gray-800 text-white py-12 mt-8 relative z-10"><div class="container mx-auto px-6 text-center"><p>&copy; ২০২৫ প্রোএডিটর। সর্বস্বত্ব সংরক্ষিত।</p></div></footer>
     
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script>
+    <script type="module">
+        import { removeBackground } from "https://cdn.jsdelivr.net/npm/@imgly/background-removal/dist/browser.js";
+        
         document.addEventListener('DOMContentLoaded', function () {
             // --- Particle.js Background ---
             particlesJS("particles-js", {
@@ -117,7 +120,7 @@
                 cursor.style.left = e.clientX + 'px';
                 cursor.style.top = e.clientY + 'px';
             });
-             document.querySelectorAll('a, button, label[for], input, .color-palette-item, .bg-image-item, .shadow-option, .history-thumbnail').forEach(el => {
+            document.querySelectorAll('a, button, label[for], input, .color-palette-item, .bg-image-item, .shadow-option, .history-thumbnail').forEach(el => {
                 el.addEventListener('mouseenter', () => cursor.classList.add('cursor-grow'));
                 el.addEventListener('mouseleave', () => cursor.classList.remove('cursor-grow'));
             });
@@ -134,7 +137,6 @@
             let backgroundImage = null;
             let backgroundColor = 'transparent';
             let currentShadow = 'none';
-            const apiKey = 'MKyYqxAq4QEoPcGSYZPUKSMK';
 
             function showLandingView() {
                 editorSection.classList.add('hidden');
@@ -147,7 +149,7 @@
             function showEditorView(isProcessing, initialImageSrc) {
                 uploadSection.classList.add('hidden');
                 editorSection.classList.remove('hidden');
-                infoSections.classList.remove('hidden'); // THIS IS THE FIX
+                infoSections.classList.remove('hidden');
 
                 let editorHTML = `
                     <div class="relative max-w-4xl mx-auto mb-6 bg-white/80 backdrop-blur-sm p-4 rounded-xl">
@@ -190,28 +192,16 @@
                 }
             }
             
-            function handleFile(file) {
+            async function handleFile(file) {
                 if (!file || !file.type.startsWith('image/')) { alert('অনুগ্রহ করে একটি সঠিক ইমেজ ফাইল নির্বাচন করুন।'); return; }
 
                 const originalImageReader = new FileReader();
-                originalImageReader.onload = function(e) {
+                originalImageReader.onload = async function(e) {
                     showEditorView(true, e.target.result);
                     generateAnimatedStars();
                     
-                    const formData = new FormData();
-                    formData.append('image_file', file);
-                    formData.append('size', 'auto');
-
-                    fetch('https://api.remove.bg/v1.0/removebg', {
-                        method: 'POST',
-                        headers: { 'X-Api-Key': apiKey },
-                        body: formData
-                    })
-                    .then(response => {
-                        if (!response.ok) { return response.json().then(err => { const errorMsg = err.errors ? err.errors[0].title : 'একটি অজানা সমস্যা হয়েছে।'; throw new Error(errorMsg); }); }
-                        return response.blob();
-                    })
-                    .then(blob => {
+                    try {
+                        const blob = await removeBackground(file);
                         const processedImageReader = new FileReader();
                         processedImageReader.onloadend = () => {
                             const base64data = processedImageReader.result;
@@ -229,8 +219,11 @@
                             img.src = base64data;
                         };
                         processedImageReader.readAsDataURL(blob);
-                    })
-                    .catch(error => { alert(`ত্রুটি: ${error.message}`); showLandingView(); });
+
+                    } catch(error) {
+                        alert(`ত্রুটি: ${error.message}`);
+                        showLandingView();
+                    }
                 };
                 originalImageReader.readAsDataURL(file);
             }

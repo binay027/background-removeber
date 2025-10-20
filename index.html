@@ -103,7 +103,7 @@
     
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script type="module">
-        import * as imglyRemoveBackground from "https://cdn.jsdelivr.net/npm/@imgly/background-removal/dist/browser.js";
+        import * as Imgly from "https://cdn.jsdelivr.net/npm/@imgly/background-removal/dist/browser.js";
         
         document.addEventListener('DOMContentLoaded', function () {
             // --- Particle.js Background ---
@@ -136,6 +136,7 @@
             let backgroundImage = null;
             let backgroundColor = 'transparent';
             let currentShadow = 'none';
+            let removeBackground = Imgly.removeBackground;
 
             function showLandingView() {
                 editorSection.classList.add('hidden');
@@ -148,7 +149,7 @@
             function showEditorView(isProcessing, initialImageSrc) {
                 uploadSection.classList.add('hidden');
                 editorSection.classList.remove('hidden');
-                infoSections.classList.remove('hidden');
+                infoSections.classList.add('hidden');
 
                 let editorHTML = `
                     <div class="relative max-w-4xl mx-auto mb-6 bg-white/80 backdrop-blur-sm p-4 rounded-xl">
@@ -200,7 +201,7 @@
                     generateAnimatedStars();
                     
                     try {
-                        const blob = await imglyRemoveBackground.removeBackground(file);
+                        const blob = await removeBackground(file);
                         const processedImageReader = new FileReader();
                         processedImageReader.onloadend = () => {
                             const base64data = processedImageReader.result;

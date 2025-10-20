@@ -61,7 +61,7 @@
     <div id="particles-js"></div>
     <div class="cursor"></div>
 
-    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+    <header class="bg-white sticky top-0 z-50 shadow-md">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
             <div class="text-2xl font-bold text-blue-600"><span>প্রো<span class="text-gray-800">এডিটর</span></span></div>
             <div id="landing-menu" class="hidden md:flex space-x-6 items-center">
@@ -147,7 +147,7 @@
             function showEditorView(isProcessing, initialImageSrc) {
                 uploadSection.classList.add('hidden');
                 editorSection.classList.remove('hidden');
-                infoSections.classList.remove('hidden');
+                infoSections.classList.remove('hidden'); // THIS IS THE FIX
 
                 let editorHTML = `
                     <div class="relative max-w-4xl mx-auto mb-6 bg-white/80 backdrop-blur-sm p-4 rounded-xl">
